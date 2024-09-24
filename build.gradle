@@ -36,7 +36,7 @@ dependencies {
 	// BouncyCastle for Java 17
 	implementation 'org.bouncycastle:bcpkix-jdk18on:1.76'
 
-	// Lombok
+	// Lombok (custom annotations)
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
