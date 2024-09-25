@@ -13,7 +13,7 @@ public class WebSecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
                 requests -> requests
-                        .requestMatchers("/certificate/**").permitAll()
+                        .requestMatchers("/certificates/validate").permitAll()
                         .anyRequest().authenticated()
                 ).oauth2Login(
                         customizer -> customizer
