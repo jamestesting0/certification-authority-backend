@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -25,15 +26,19 @@ public class X509CertificateController {
 
     @GetMapping("certificate")
     public ResponseEntity<List<X509CertificateEntry>> getAllCertificates() {
-        return ResponseEntity.ok(x509CertificateEntryManager.getAll());
+        List<X509CertificateEntry> certificateEntries = x509CertificateEntryManager.getAll();
+        if (certificateEntries.isEmpty()) {
+            throw new ResponseStatusException(NO_CONTENT);
+        }
+        return ResponseEntity.ok(certificateEntries);
     }
 
     @GetMapping("certificate/{certificateId}")
     public ResponseEntity<X509CertificateEntry> getCertificate(@PathVariable("certificateId") Long certificateId) {
-        X509CertificateEntry certificate = x509CertificateEntryManager.getByID(certificateId);
-        if (certificate == null) {
+        X509CertificateEntry certificateEntry = x509CertificateEntryManager.getByID(certificateId);
+        if (certificateEntry == null) {
             throw new ResponseStatusException(NOT_FOUND);
         }
-        return ResponseEntity.ok(certificate);
+        return ResponseEntity.ok(certificateEntry);
     }
 }
