@@ -28,7 +28,7 @@ public class X509CertificateUtils {
     }
 
     public static X500Name createX500Name(String commonName, String organization, String organizationalUnit,
-                                                   String locality, String state, String country) {
+                                          String locality, String state, String country) {
         return new X500Name(
                 new RDN[] {
                         createRDN(BCStyle.CN, commonName),
@@ -57,7 +57,7 @@ public class X509CertificateUtils {
         }
     }
 
-    static X509Certificate fromPEM(String certificatePEM) throws CertificateException {
+    public static X509Certificate fromPEM(String certificatePEM) throws CertificateException {
         String normalizedPEM = certificatePEM
                 .replace("-----BEGIN CERTIFICATE-----", "")
                 .replace("-----END CERTIFICATE-----", "")
@@ -72,7 +72,7 @@ public class X509CertificateUtils {
         }
     }
 
-    static String toPEM(X509Certificate certificate) throws IOException {
+    public static String toPEM(X509Certificate certificate) throws IOException {
         try (
                 StringWriter stringWriter = new StringWriter();
                 JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)

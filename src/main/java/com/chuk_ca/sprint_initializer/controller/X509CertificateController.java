@@ -1,15 +1,15 @@
 package com.chuk_ca.sprint_initializer.controller;
 
+import com.chuk_ca.sprint_initializer.model.CertificateRequest;
+import com.chuk_ca.sprint_initializer.model.CertificateValidateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.service.X509CertificateEntryManager;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -24,8 +24,8 @@ public class X509CertificateController {
         this.x509CertificateEntryManager = x509CertificateEntryManager;
     }
 
-    @GetMapping("certificate")
-    public ResponseEntity<List<X509CertificateEntry>> getAllCertificates() {
+    @GetMapping("certificates")
+    public ResponseEntity<List<X509CertificateEntry>> getAllCertificateEntries() {
         List<X509CertificateEntry> certificateEntries = x509CertificateEntryManager.getAll();
         if (certificateEntries.isEmpty()) {
             throw new ResponseStatusException(NO_CONTENT);
@@ -33,12 +33,27 @@ public class X509CertificateController {
         return ResponseEntity.ok(certificateEntries);
     }
 
-    @GetMapping("certificate/{certificateId}")
-    public ResponseEntity<X509CertificateEntry> getCertificate(@PathVariable("certificateId") Long certificateId) {
+    @GetMapping("certificates/{certificateId}")
+    public ResponseEntity<X509CertificateEntry> getCertificateEntry(@PathVariable("certificateId") Long certificateId) {
         X509CertificateEntry certificateEntry = x509CertificateEntryManager.getByID(certificateId);
         if (certificateEntry == null) {
             throw new ResponseStatusException(NOT_FOUND);
         }
         return ResponseEntity.ok(certificateEntry);
+    }
+
+    @DeleteMapping("certificates/{certificateId}")
+    public ResponseEntity<X509CertificateEntry> deleteCertificateEntry(@PathVariable("certificateId") Long certificateId) {
+        return null;
+    }
+
+    @PostMapping("certificates")
+    public ResponseEntity<X509Certificate> createCertificate(@RequestBody CertificateRequest certificateRequest) {
+        return null;
+    }
+
+    @PostMapping("certificates/validate")
+    public ResponseEntity<String> validateCertificate(@RequestBody CertificateValidateRequest certificateRequest) {
+        return null;
     }
 }
