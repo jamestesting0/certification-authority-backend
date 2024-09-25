@@ -18,4 +18,6 @@ public class X509CertificateEntry {
     private String certificate;
 
     private String issuanceDate;
+
+    private String issuancePerson;
 }
