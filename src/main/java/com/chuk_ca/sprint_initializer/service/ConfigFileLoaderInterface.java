@@ -1,4 +1,4 @@
-package com.chuk_ca.sprint_initializer.model;
+package com.chuk_ca.sprint_initializer.service;
 
 import org.springframework.core.io.Resource;
 

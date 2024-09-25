@@ -1,6 +1,5 @@
 package com.chuk_ca.sprint_initializer.service;
 
-import com.chuk_ca.sprint_initializer.model.ConfigFileLoaderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;

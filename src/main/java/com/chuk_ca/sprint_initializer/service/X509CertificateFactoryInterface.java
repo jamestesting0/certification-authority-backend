@@ -1,4 +1,4 @@
-package com.chuk_ca.sprint_initializer.model;
+package com.chuk_ca.sprint_initializer.service;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.operator.OperatorCreationException;

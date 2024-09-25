@@ -1,6 +1,5 @@
 package com.chuk_ca.sprint_initializer.service;
 
-import com.chuk_ca.sprint_initializer.model.X509CertificateFactoryInterface;
 import com.chuk_ca.sprint_initializer.service.util.X509CertificateUtils;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
