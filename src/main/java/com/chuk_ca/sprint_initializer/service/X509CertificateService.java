@@ -1,6 +1,6 @@
 package com.chuk_ca.sprint_initializer.service;
 
-import com.chuk_ca.sprint_initializer.model.CertificateRequest;
+import com.chuk_ca.sprint_initializer.model.CertificateCreateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.service.dao.DAO;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateFactory;
@@ -49,29 +49,29 @@ public class X509CertificateService {
         return certificateEntryDAO.save(certificateEntry);
     }
 
-    public String createCertificateAsPEM(CertificateRequest certificateRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
+    public String createCertificateAsPEM(CertificateCreateRequest certificateCreateRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
         // Process the public key as base64 string
-        byte[] decodedKey = Base64.getDecoder().decode(certificateRequest.getBase64Key().getBytes());
+        byte[] decodedKey = Base64.getDecoder().decode(certificateCreateRequest.getBase64Key().getBytes());
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey publicKey = keyFactory.generatePublic(keySpec);
 
         // Create the subject name
         X500Name subject = X509CertificateUtils.createX500Name(
-                certificateRequest.getCommonName(),
-                certificateRequest.getOrganization(),
-                certificateRequest.getOrganizationUnit(),
-                certificateRequest.getLocality(),
-                certificateRequest.getState(),
-                certificateRequest.getCountry()
+                certificateCreateRequest.getCommonName(),
+                certificateCreateRequest.getOrganization(),
+                certificateCreateRequest.getOrganizationUnit(),
+                certificateCreateRequest.getLocality(),
+                certificateCreateRequest.getState(),
+                certificateCreateRequest.getCountry()
         );
 
         // Create the X509 certificate
         X509Certificate certificate = certificateFactory.generateCertificate(
                 publicKey,
                 subject,
-                certificateRequest.getNotBefore(),
-                certificateRequest.getNotAfter()
+                certificateCreateRequest.getNotBefore(),
+                certificateCreateRequest.getNotAfter()
         );
 
         return X509CertificateUtils.convertCertificateToPEM(certificate);

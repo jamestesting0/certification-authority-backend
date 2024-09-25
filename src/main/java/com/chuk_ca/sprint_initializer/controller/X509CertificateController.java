@@ -1,7 +1,7 @@
 package com.chuk_ca.sprint_initializer.controller;
 
+import com.chuk_ca.sprint_initializer.model.CertificateCreateRequest;
 import com.chuk_ca.sprint_initializer.model.CertificateRequest;
-import com.chuk_ca.sprint_initializer.model.CertificateValidateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.service.X509CertificateService;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -33,7 +33,7 @@ public class X509CertificateController {
     public ResponseEntity<List<X509CertificateEntry>> getAllCertificateEntries() {
         List<X509CertificateEntry> certificateEntries = x509CertificateService.getAllCertificateEntries();
         if (certificateEntries.isEmpty()) {
-            throw new ResponseStatusException(NO_CONTENT);
+            throw new ResponseStatusException(NO_CONTENT, "There are no certificate entries yet.");
         }
         return ResponseEntity.ok(certificateEntries);
     }
@@ -42,7 +42,7 @@ public class X509CertificateController {
     public ResponseEntity<X509CertificateEntry> getCertificateEntry(@PathVariable("certificateId") Long certificateId) {
         X509CertificateEntry certificateEntry = x509CertificateService.getCertificateEntryById(certificateId);
         if (certificateEntry == null) {
-            throw new ResponseStatusException(NOT_FOUND);
+            throw new ResponseStatusException(NOT_FOUND, "This certificate entry does not exist.");
         }
         return ResponseEntity.ok(certificateEntry);
     }
@@ -59,9 +59,9 @@ public class X509CertificateController {
     }
 
     @PostMapping("certificates/create")
-    public ResponseEntity<String> createCertificate(@RequestBody CertificateRequest certificateRequest) {
+    public ResponseEntity<String> createCertificate(@RequestBody CertificateCreateRequest certificateCreateRequest) {
         try {
-            return ResponseEntity.ok(x509CertificateService.createCertificateAsPEM(certificateRequest));
+            return ResponseEntity.ok(x509CertificateService.createCertificateAsPEM(certificateCreateRequest));
         } catch (CertificateException | OperatorCreationException e) {
             throw new ResponseStatusException(BAD_REQUEST);
         } catch (NoSuchAlgorithmException e) {
@@ -74,7 +74,12 @@ public class X509CertificateController {
     }
 
     @PostMapping("certificates/validate")
-    public ResponseEntity<String> validateCertificate(@RequestBody CertificateValidateRequest certificateRequest) {
+    public ResponseEntity<String> validateCertificate(@RequestBody CertificateRequest certificateRequest) {
+        return null;
+    }
+
+    @PostMapping("certificates/view")
+    public ResponseEntity<String> viewCertificate(@RequestBody CertificateRequest certificateRequest) {
         return null;
     }
 }
