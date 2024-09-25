@@ -13,8 +13,9 @@ public class WebSecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
                 requests -> requests
-                        .requestMatchers("/certificates/validate").permitAll()
-                        .anyRequest().authenticated()
+                        // .requestMatchers("/certificates/validate").permitAll()
+                        // .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 ).oauth2Login(
                         customizer -> customizer
                                 .loginPage("/oauth2/authorization/github")
