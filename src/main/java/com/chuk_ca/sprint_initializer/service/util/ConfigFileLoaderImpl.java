@@ -1,4 +1,4 @@
-package com.chuk_ca.sprint_initializer.service;
+package com.chuk_ca.sprint_initializer.service.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -10,13 +10,13 @@ import java.io.InputStream;
 import java.util.Properties;
 
 @Component
-public class ConfigFileLoader implements ConfigFileLoaderInterface {
-    private static final String FILE_PATH_PREFIX = "classpath:static/config/";
+public class ConfigFileLoaderImpl implements ConfigFileLoader {
+    private static final String FILE_PATH_PREFIX = "classpath:config/";
 
     private final ResourceLoader resourceLoader;
 
     @Autowired
-    public ConfigFileLoader(ResourceLoader resourceLoader) {
+    public ConfigFileLoaderImpl(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
@@ -25,6 +25,7 @@ public class ConfigFileLoader implements ConfigFileLoaderInterface {
         return resourceLoader.getResource(FILE_PATH_PREFIX + fileName);
     }
 
+    @Override
     public Properties loadPropertiesFromFile(String fileName) throws IOException {
         Resource resource = loadConfigFile(fileName);
 

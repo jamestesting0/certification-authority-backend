@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class HazelcastConfig {
-
     @Bean
     public HazelcastInstance hazelcastInstance() {
         Config config = new Config();

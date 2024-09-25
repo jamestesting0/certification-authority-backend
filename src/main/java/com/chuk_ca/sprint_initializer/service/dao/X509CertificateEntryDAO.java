@@ -1,20 +1,22 @@
-package com.chuk_ca.sprint_initializer.service;
+package com.chuk_ca.sprint_initializer.service.dao;
 
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
-@Service
-public class X509CertificateEntryManager implements X509CertificateEntryManagerInterface {
+@Component
+public class X509CertificateEntryDAO implements DAO<X509CertificateEntry> {
     private final X509CertificateRepository x509CertificateRepository;
 
-    public X509CertificateEntryManager(X509CertificateRepository x509CertificateRepository) {
+    @Autowired
+    public X509CertificateEntryDAO(X509CertificateRepository x509CertificateRepository) {
         this.x509CertificateRepository = x509CertificateRepository;
     }
 
