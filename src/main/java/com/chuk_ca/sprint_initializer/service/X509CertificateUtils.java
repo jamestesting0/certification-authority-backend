@@ -15,6 +15,7 @@ import java.io.StringWriter;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -56,7 +57,7 @@ public class X509CertificateUtils {
         }
     }
 
-    static java.security.cert.X509Certificate fromPEM(String certificatePEM) throws CertificateException {
+    static X509Certificate fromPEM(String certificatePEM) throws CertificateException {
         String normalizedPEM = certificatePEM
                 .replace("-----BEGIN CERTIFICATE-----", "")
                 .replace("-----END CERTIFICATE-----", "")
@@ -65,13 +66,13 @@ public class X509CertificateUtils {
         byte[] decoded = java.util.Base64.getDecoder().decode(normalizedPEM);
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(decoded)) {
-            return (java.security.cert.X509Certificate) certFactory.generateCertificate(inputStream);
+            return (X509Certificate) certFactory.generateCertificate(inputStream);
         } catch (IOException e) {
             throw new CertificateException(e);
         }
     }
 
-    static String toPEM(java.security.cert.X509Certificate certificate) throws IOException {
+    static String toPEM(X509Certificate certificate) throws IOException {
         try (
                 StringWriter stringWriter = new StringWriter();
                 JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)

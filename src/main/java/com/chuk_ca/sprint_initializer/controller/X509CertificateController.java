@@ -1,6 +1,6 @@
 package com.chuk_ca.sprint_initializer.controller;
 
-import com.chuk_ca.sprint_initializer.model.X509Certificate;
+import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.service.X509CertificateService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +24,13 @@ public class X509CertificateController {
     }
 
     @GetMapping("certificate")
-    public ResponseEntity<List<X509Certificate>> getAllCertificates() {
+    public ResponseEntity<List<X509CertificateEntry>> getAllCertificates() {
         return ResponseEntity.ok(x509CertificateService.getAll());
     }
 
     @GetMapping("certificate/{certificateId}")
-    public ResponseEntity<X509Certificate> getCertificate(@PathVariable("certificateId") Long certificateId) {
-        X509Certificate certificate = x509CertificateService.getByID(certificateId);
+    public ResponseEntity<X509CertificateEntry> getCertificate(@PathVariable("certificateId") Long certificateId) {
+        X509CertificateEntry certificate = x509CertificateService.getByID(certificateId);
         if (certificate == null) {
             throw new ResponseStatusException(NOT_FOUND);
         }

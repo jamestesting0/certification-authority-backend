@@ -1,12 +1,13 @@
 package com.chuk_ca.sprint_initializer.service;
 
-import com.chuk_ca.sprint_initializer.model.X509Certificate;
+
 import com.chuk_ca.sprint_initializer.model.X509CertificateFactoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 
 @Service
@@ -23,7 +24,7 @@ public class X509CertificateFactory implements X509CertificateFactoryInterface {
             CA_KEY_PATH = "ca.key.path";
 
     private ConfigFileLoader configLoader;
-    private java.security.cert.X509Certificate caCertificate;
+    private X509Certificate caCertificate;
     private PrivateKey caPrivateKey;
 
     @Autowired
@@ -37,7 +38,7 @@ public class X509CertificateFactory implements X509CertificateFactoryInterface {
         return null;
     }
 
-    private java.security.cert.X509Certificate readCACert() {
+    private X509Certificate readCACert() {
         return null;
     }
 
@@ -47,7 +48,7 @@ public class X509CertificateFactory implements X509CertificateFactoryInterface {
     }
 
     @Override
-    public boolean validateCertificate(java.security.cert.X509Certificate certificate) {
+    public boolean validateCertificate(X509Certificate certificate) {
         try {
             PublicKey caPublicKey = caCertificate.getPublicKey();
             certificate.verify(caPublicKey);
@@ -61,7 +62,7 @@ public class X509CertificateFactory implements X509CertificateFactoryInterface {
         this.configLoader = configLoader;
     }
 
-    public void setCACertificate(java.security.cert.X509Certificate caCertificate) {
+    public void setCACertificate(X509Certificate caCertificate) {
         this.caCertificate = caCertificate;
     }
 
