@@ -4,6 +4,7 @@ import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -34,12 +35,13 @@ public class X509CertificateEntryManager implements X509CertificateEntryManagerI
 
     @Override
     @CacheEvict(value = "x509CertificateCache", key = "#id")
-    public X509CertificateEntry deleteByID(Long id) {
-        return null;
+    public void deleteByID(Long id) {
+        x509CertificateRepository.deleteById(id);
     }
 
     @Override
+    @CachePut(value = "x509CertificateCache", key = "#certificateEntry.id")
     public X509CertificateEntry save(X509CertificateEntry certificateEntry) {
-        return null;
+        return x509CertificateRepository.save(certificateEntry);
     }
 }

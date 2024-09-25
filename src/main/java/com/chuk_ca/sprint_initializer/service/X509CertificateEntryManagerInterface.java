@@ -9,7 +9,7 @@ public interface X509CertificateEntryManagerInterface {
 
     X509CertificateEntry getByID(Long id);
 
-    X509CertificateEntry deleteByID(Long id);
+    void deleteByID(Long id);
 
     X509CertificateEntry save(X509CertificateEntry certificateEntry);
 }
