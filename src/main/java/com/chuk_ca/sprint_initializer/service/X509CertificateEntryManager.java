@@ -9,10 +9,10 @@ import org.springframework.cache.annotation.Cacheable;
 import java.util.List;
 
 @Service
-public class X509CertificateService {
+public class X509CertificateEntryManager {
     private final X509CertificateRepository x509CertificateRepository;
 
-    public X509CertificateService(X509CertificateRepository x509CertificateRepository) {
+    public X509CertificateEntryManager(X509CertificateRepository x509CertificateRepository) {
         this.x509CertificateRepository = x509CertificateRepository;
     }
 
