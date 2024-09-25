@@ -1,4 +1,4 @@
-package com.chuk_ca.sprint_initializer.service;
+package com.chuk_ca.sprint_initializer.service.util;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERPrintableString;
