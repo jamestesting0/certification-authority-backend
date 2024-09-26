@@ -23,7 +23,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 @Service
-public class X509CertificateServiceImpl {
+public class X509CertificateServiceImpl implements X509CertificateService{
     private final X509CertificateFactory certificateFactory;
 
     private final DAO<X509CertificateEntry> certificateEntryDAO;
