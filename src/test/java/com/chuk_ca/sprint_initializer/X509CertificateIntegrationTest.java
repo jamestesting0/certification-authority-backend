@@ -114,7 +114,7 @@ class X509CertificateIntegrationTest {
     }
 
     @Test
-    void testCreateCertificate() throws Exception {
+    void testSaveCertificateEntry() throws Exception {
         X509CertificateEntry newEntry = new X509CertificateEntry();
         newEntry.setCertificate(testCertificateEntry.getCertificate());
         newEntry.setIssuanceDate("2024-09-26");
