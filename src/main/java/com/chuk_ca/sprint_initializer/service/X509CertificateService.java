@@ -1,24 +1,25 @@
 package com.chuk_ca.sprint_initializer.service;
 
-import com.chuk_ca.sprint_initializer.model.CertificateCreateRequest;
+import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
+import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
 import com.chuk_ca.sprint_initializer.service.dao.DAO;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateFactory;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.io.StringReader;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -49,12 +50,20 @@ public class X509CertificateService {
         return certificateEntryDAO.save(certificateEntry);
     }
 
-    public String createCertificateAsPEM(CertificateCreateRequest certificateCreateRequest) throws NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
+    public String createCertificateAsPEM(X509CertificateCreateRequest certificateCreateRequest) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
         // Process the public key as base64 string
-        byte[] decodedKey = Base64.getDecoder().decode(certificateCreateRequest.getBase64Key().getBytes());
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decodedKey);
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        PublicKey publicKey = keyFactory.generatePublic(keySpec);
+        PublicKey publicKey;
+        try (PEMParser pemParser = new PEMParser(new StringReader(certificateCreateRequest.getPublicKey()))) {
+            Object object = pemParser.readObject();
+
+            JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
+
+            if (object instanceof SubjectPublicKeyInfo subjectPublicKeyInfo) {
+                publicKey = converter.getPublicKey(subjectPublicKeyInfo);
+            } else {
+                throw new InvalidKeySpecException("The PEM content does not contain a valid public key");
+            }
+        }
 
         // Create the subject name
         X500Name subject = X509CertificateUtils.createX500Name(
@@ -75,5 +84,10 @@ public class X509CertificateService {
         );
 
         return X509CertificateUtils.convertCertificateToPEM(certificate);
+    }
+
+    public void validateCertificate(X509CertificateRequest certificateRequest) throws CertificateException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException {
+        X509Certificate certificate = X509CertificateUtils.readCertificateFromPEM(certificateRequest.getPemContent());
+        certificateFactory.validateCertificate(certificate);
     }
 }

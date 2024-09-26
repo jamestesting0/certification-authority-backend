@@ -11,5 +11,5 @@ import java.util.Date;
 public interface X509CertificateFactory {
     X509Certificate generateCertificate(PublicKey publicKey, X500Name subject, Date notBefore, Date notAfter) throws CertificateException, OperatorCreationException;
 
-    boolean validateCertificate(java.security.cert.X509Certificate certificate);
+    void validateCertificate(java.security.cert.X509Certificate certificate) throws CertificateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException;
 }

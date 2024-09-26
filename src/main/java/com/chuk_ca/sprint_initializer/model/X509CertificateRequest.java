@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CertificateRequest {
+public class X509CertificateRequest {
     private String pemContent;
 }

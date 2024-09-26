@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface X509CertificateRepository extends JpaRepository<X509CertificateEntry, Long> {
+public interface X509CertificateEntryRepository extends JpaRepository<X509CertificateEntry, Long> {
     @NotNull Optional<X509CertificateEntry> findById(@NotNull Long id);
 }

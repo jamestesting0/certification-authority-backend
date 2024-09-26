@@ -7,8 +7,8 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class CertificateCreateRequest {
-    private String base64Key;
+public class X509CertificateCreateRequest {
+    private String publicKey;
     private String commonName;
     private String organization;
     private String organizationUnit;

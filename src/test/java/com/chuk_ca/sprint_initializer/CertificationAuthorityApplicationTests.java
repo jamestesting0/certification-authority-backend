@@ -5,9 +5,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class CertificationAuthorityApplicationTests {
-
 	@Test
 	void contextLoads() {
+		// Test for the instantiation of the application
 	}
-
 }

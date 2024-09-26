@@ -82,11 +82,11 @@ public class X509CertificateFactoryImpl implements X509CertificateFactory {
     }
 
     private PrivateKey readCAPrivateKey(String fileName) throws GeneralSecurityException, IOException {
-        return X509CertificateUtils.readPrivateKeyFromPEM(fileName);
+        return X509CertificateUtils.readPrivateKeyFromFile(fileName);
     }
 
     private X509Certificate readCACert(String fileName) throws IOException, CertificateException {
-        return X509CertificateUtils.readCertificateFromPEM(fileName);
+        return X509CertificateUtils.readCertificateFromFile(fileName);
     }
 
     @Override
@@ -112,13 +112,9 @@ public class X509CertificateFactoryImpl implements X509CertificateFactory {
     }
 
     @Override
-    public boolean validateCertificate(X509Certificate certificate) {
-        try {
-            PublicKey caPublicKey = caCertificate.getPublicKey();
-            certificate.verify(caPublicKey);
-            return true;
-        } catch (CertificateException | NoSuchAlgorithmException | SignatureException | InvalidKeyException | NoSuchProviderException e) {
-            return false;
-        }
+    public void validateCertificate(X509Certificate certificate) throws CertificateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException {
+        PublicKey caPublicKey = caCertificate.getPublicKey();
+        certificate.verify(caPublicKey, BouncyCastleProvider.PROVIDER_NAME);
+        certificate.checkValidity();
     }
 }
