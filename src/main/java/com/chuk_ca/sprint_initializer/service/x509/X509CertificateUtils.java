@@ -13,8 +13,11 @@ import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamSource;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -52,12 +55,6 @@ public class X509CertificateUtils {
 
     private static RDN createRDN(ASN1ObjectIdentifier oid, String value) {
         return new RDN(oid, new DERPrintableString(value));
-    }
-
-    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME);
-        keyPairGenerator.initialize(2048);
-        return keyPairGenerator.generateKeyPair();
     }
 
     public static void saveCertificateToPEM(String fileName, X509Certificate certificate) throws IOException {
@@ -136,6 +133,17 @@ public class X509CertificateUtils {
                 JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)
         ) {
             pemWriter.writeObject(publicKey);
+            pemWriter.flush();
+            return stringWriter.toString();
+        }
+    }
+
+    public static String convertPrivateKeyToPEM(PrivateKey privateKey) throws IOException {
+        try (
+                StringWriter stringWriter = new StringWriter();
+                JcaPEMWriter pemWriter = new JcaPEMWriter(stringWriter)
+        ) {
+            pemWriter.writeObject(privateKey);
             pemWriter.flush();
             return stringWriter.toString();
         }
@@ -234,5 +242,10 @@ public class X509CertificateUtils {
             case "2.5.29.37" -> "Extended Key Usage";
             default -> "Unknown Extension";
         };
+    }
+
+    public static InputStreamSource stringToInputStreamSource(String content) {
+        byte[] byteArray = content.getBytes(StandardCharsets.UTF_8);
+        return new ByteArrayResource(byteArray);
     }
 }

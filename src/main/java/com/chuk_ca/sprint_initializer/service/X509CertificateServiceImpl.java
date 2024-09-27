@@ -1,11 +1,14 @@
 package com.chuk_ca.sprint_initializer.service;
 
+import com.chuk_ca.sprint_initializer.model.EmailRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
 import com.chuk_ca.sprint_initializer.service.dao.DAO;
+import com.chuk_ca.sprint_initializer.service.util.EmailSender;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateFactory;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
+import jakarta.mail.MessagingException;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
@@ -28,10 +31,13 @@ public class X509CertificateServiceImpl implements X509CertificateService{
 
     private final DAO<X509CertificateEntry> certificateEntryDAO;
 
+    private final EmailSender emailSender;
+
     @Autowired
-    public X509CertificateServiceImpl(X509CertificateFactory certificateFactory, DAO<X509CertificateEntry> certificateEntryDAO) {
+    public X509CertificateServiceImpl(X509CertificateFactory certificateFactory, DAO<X509CertificateEntry> certificateEntryDAO, EmailSender emailSender) {
         this.certificateFactory = certificateFactory;
         this.certificateEntryDAO = certificateEntryDAO;
+        this.emailSender = emailSender;
     }
 
     public List<X509CertificateEntry> getAllCertificateEntries() {
@@ -89,5 +95,23 @@ public class X509CertificateServiceImpl implements X509CertificateService{
     public void validateCertificate(X509CertificateRequest certificateRequest) throws CertificateException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException {
         X509Certificate certificate = X509CertificateUtils.readCertificateFromPEM(certificateRequest.getPemContent());
         certificateFactory.validateCertificate(certificate);
+    }
+
+    @Override
+    public KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
+        return certificateFactory.generateKeyPair();
+    }
+
+    @Override
+    public void sendPrivateKey(EmailRequest emailRequest, PrivateKey privateKey) throws IOException, MessagingException {
+        String pemContent = X509CertificateUtils.convertPrivateKeyToPEM(privateKey);
+
+        emailSender.sendEmail(
+                emailRequest.getAddress(),
+                "Your Private Key",
+                "This is your private key for your certificate issued by the CUHK Certificate Authority, " +
+                        "please keep it safe and not share with anyone else.",
+                X509CertificateUtils.stringToInputStreamSource(pemContent)
+        );
     }
 }

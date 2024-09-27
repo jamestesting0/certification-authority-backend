@@ -12,4 +12,6 @@ public interface X509CertificateFactory {
     X509Certificate generateCertificate(PublicKey publicKey, X500Name subject, Date notBefore, Date notAfter) throws CertificateException, OperatorCreationException;
 
     void validateCertificate(java.security.cert.X509Certificate certificate) throws CertificateException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException;
+
+    KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException;
 }

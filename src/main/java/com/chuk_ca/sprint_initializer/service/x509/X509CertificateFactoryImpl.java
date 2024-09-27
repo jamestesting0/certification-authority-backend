@@ -59,7 +59,7 @@ public class X509CertificateFactoryImpl implements X509CertificateFactory {
         String caPrivateKeyPath = properties.getProperty(CA_PRIVATE_KEY_PATH);
         String caCertificatePath = properties.getProperty(CA_CERT_PATH);
         if (Files.notExists(Paths.get(caPrivateKeyPath)) || Files.notExists(Paths.get(caCertificatePath))) {
-            KeyPair caKeyPair = X509CertificateUtils.generateKeyPair();
+            KeyPair caKeyPair = this.generateKeyPair();
             this.caPrivateKey = caKeyPair.getPrivate();
             PublicKey caPublicKey = caKeyPair.getPublic();
             X509CertificateUtils.savePrivateKeyToPEM(caPrivateKeyPath, this.caPrivateKey);
@@ -116,5 +116,12 @@ public class X509CertificateFactoryImpl implements X509CertificateFactory {
         PublicKey caPublicKey = caCertificate.getPublicKey();
         certificate.verify(caPublicKey, BouncyCastleProvider.PROVIDER_NAME);
         certificate.checkValidity();
+    }
+
+    @Override
+    public KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME);
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
     }
 }

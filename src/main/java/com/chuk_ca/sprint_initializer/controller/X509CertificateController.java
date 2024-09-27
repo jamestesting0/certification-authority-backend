@@ -1,11 +1,9 @@
 package com.chuk_ca.sprint_initializer.controller;
 
-import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
-import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
-import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
-import com.chuk_ca.sprint_initializer.model.X509CertificateResponse;
+import com.chuk_ca.sprint_initializer.model.*;
 import com.chuk_ca.sprint_initializer.service.X509CertificateService;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
+import jakarta.mail.MessagingException;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SignatureException;
+import java.security.*;
 import java.security.cert.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
@@ -88,7 +83,7 @@ public class X509CertificateController {
         } catch (CertificateException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate is encoded incorrectly.");
         }  catch (NoSuchProviderException | InvalidKeyException e) {
-            throw new ResponseStatusException(BAD_REQUEST, "Internal server error.");
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Internal server error.");
         } catch (NoSuchAlgorithmException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate's signature algorithm is invalid.");
         } catch (SignatureException e) {
@@ -107,5 +102,21 @@ public class X509CertificateController {
         } catch (IOException | CertificateException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate is invalid.");
         }
+    }
+
+    @PostMapping("certificates/generate-keys")
+    public ResponseEntity<PublicKeyResponse> generateKeys(@RequestBody EmailRequest emailRequest) {
+        PublicKeyResponse publicKeyResponse = new PublicKeyResponse();
+        try {
+            KeyPair keyPair = certificateService.generateKeyPair();
+            publicKeyResponse.setPemContent(X509CertificateUtils.convertPublicKeyToPEM(keyPair.getPublic()));
+            certificateService.sendPrivateKey(emailRequest, keyPair.getPrivate());
+        } catch (NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Internal server error.");
+        } catch (MessagingException e) {
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Failed to send the private key via Email.");
+        }
+
+        return ResponseEntity.ok(publicKeyResponse);
     }
 }
