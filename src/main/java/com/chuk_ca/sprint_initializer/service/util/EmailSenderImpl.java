@@ -8,8 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 public class EmailSenderImpl implements EmailSender{
     private final JavaMailSender mailSender;
@@ -20,7 +18,7 @@ public class EmailSenderImpl implements EmailSender{
     }
 
     @Override
-    public void sendEmail(String address, String subject, String text, InputStreamSource file) throws MessagingException, IOException {
+    public void sendEmail(String address, String subject, String text, InputStreamSource file) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(address);

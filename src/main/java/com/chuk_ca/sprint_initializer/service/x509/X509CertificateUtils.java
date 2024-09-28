@@ -8,7 +8,6 @@ import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
@@ -85,15 +84,19 @@ public class X509CertificateUtils {
     }
 
     public static PrivateKey readPrivateKeyFromFile(String filePath) throws IOException, GeneralSecurityException {
-        try (PEMParser pemParser = new PEMParser(new FileReader(filePath))) {
+        try (Reader reader = new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8);
+             PEMParser pemParser = new PEMParser(reader)) {
+
             Object object = pemParser.readObject();
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
 
             if (object instanceof PEMKeyPair keyPair) {
                 return converter.getPrivateKey(keyPair.getPrivateKeyInfo());
-            } else if (object instanceof PrivateKeyInfo privateKeyInfo) {
+            }
+            else if (object instanceof PrivateKeyInfo privateKeyInfo) {
                 return converter.getPrivateKey(privateKeyInfo);
-            } else {
+            }
+            else {
                 throw new GeneralSecurityException("Invalid private key format");
             }
         }

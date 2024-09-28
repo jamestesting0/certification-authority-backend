@@ -2,13 +2,19 @@ package com.chuk_ca.sprint_initializer;
 
 import com.chuk_ca.sprint_initializer.config.BouncyCastleConfig;
 import com.chuk_ca.sprint_initializer.config.HazelcastConfig;
+import com.chuk_ca.sprint_initializer.model.EmailRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateEntryRepository;
 import com.chuk_ca.sprint_initializer.service.X509CertificateService;
+import com.chuk_ca.sprint_initializer.service.X509CertificateServiceImpl;
 import com.chuk_ca.sprint_initializer.service.util.ConfigFileLoader;
+import com.chuk_ca.sprint_initializer.service.util.EmailSender;
+import com.chuk_ca.sprint_initializer.service.util.EmailSenderImpl;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
+import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,10 +24,15 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
@@ -33,6 +44,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Properties;
 
+import static com.chuk_ca.sprint_initializer.model.CAConfigPaths.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -42,14 +54,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 class X509CertificateServiceTest {
-    private static final String CA_COMMON_NAME = "ca.common_name",
-            CA_ORGANIZATION = "ca.organization",
-            CA_ORGANIZATIONAL_UNIT = "ca.organizational_unit",
-            CA_LOCALITY = "ca.locality",
-            CA_STATE = "ca.state",
-            CA_COUNTRY = "ca.country",
-            CA_CERT_PATH = "ca.cert.path";
-
     @Autowired
     private X509CertificateService certificateService;
 
@@ -175,7 +179,7 @@ class X509CertificateServiceTest {
         certificateCreateRequest.setNotAfter(testCertificate.getNotAfter());
         String notYetValidCertificatePEM = certificateService.createCertificateAsPEM(certificateCreateRequest);
         certificateRequest.setPemContent(notYetValidCertificatePEM);
-        assertThrows(CertificateNotYetValidException.class, () -> {certificateService.validateCertificate(certificateRequest);});
+        assertThrows(CertificateNotYetValidException.class, () -> certificateService.validateCertificate(certificateRequest));
     }
 
     private String tamperCertificate(String pemContent) {
@@ -190,5 +194,28 @@ class X509CertificateServiceTest {
                 base64Content.substring(middleIndex + 5);
 
         return pemContent.substring(0, startIndex) + "\n" + tamperedBase64Content + "\n" + pemContent.substring(endIndex);
+    }
+
+    @Test
+    void testSendPrivateKey() throws GeneralSecurityException, IOException, MessagingException {
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setAddress(caProperties.getProperty(CA_EMAIL_ADDRESS));
+        PrivateKey privateKey = X509CertificateUtils.readPrivateKeyFromFile(caProperties.getProperty(CA_PRIVATE_KEY_PATH));
+
+        // Set up mock objects
+        GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP);
+        greenMail.start();
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost("localhost");
+        javaMailSender.setPort(3025);
+        EmailSender emailSenderMock = new EmailSenderImpl(javaMailSender);
+        X509CertificateService certificateServiceMock = new X509CertificateServiceImpl(null, null, emailSenderMock);
+
+        assertDoesNotThrow(() -> certificateServiceMock.sendPrivateKey(emailRequest, privateKey));
+
+        // Check if the Email is sent
+        MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
+        assertEquals(1, receivedMessages.length);
+        assertEquals(caProperties.getProperty(CA_EMAIL_ADDRESS), receivedMessages[0].getAllRecipients()[0].toString());
     }
 }

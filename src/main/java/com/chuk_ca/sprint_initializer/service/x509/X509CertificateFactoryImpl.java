@@ -24,19 +24,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+import static com.chuk_ca.sprint_initializer.model.CAConfigPaths.*;
+
 @Component
 public class X509CertificateFactoryImpl implements X509CertificateFactory {
     private static final Logger logger = LoggerFactory.getLogger(X509CertificateFactoryImpl.class);
-    private static final String CA_COMMON_NAME = "ca.common_name",
-            CA_ORGANIZATION = "ca.organization",
-            CA_ORGANIZATIONAL_UNIT = "ca.organizational_unit",
-            CA_LOCALITY = "ca.locality",
-            CA_STATE = "ca.state",
-            CA_COUNTRY = "ca.country",
-            CA_CERT_PATH = "ca.cert.path",
-            CA_PRIVATE_KEY_PATH = "ca.key.path",
-            CA_SIGNATURE_ALGORITHM = "ca.signature_algorithm";
-
     private final X500Name issuer;
     private final String signatureAlgorithm;
     private final PrivateKey caPrivateKey;

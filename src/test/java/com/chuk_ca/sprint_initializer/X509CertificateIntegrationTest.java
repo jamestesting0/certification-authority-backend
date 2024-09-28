@@ -1,5 +1,6 @@
 package com.chuk_ca.sprint_initializer;
 
+import com.chuk_ca.sprint_initializer.model.EmailRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
@@ -7,13 +8,17 @@ import com.chuk_ca.sprint_initializer.repository.X509CertificateEntryRepository;
 import com.chuk_ca.sprint_initializer.service.util.ConfigFileLoader;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+import static com.chuk_ca.sprint_initializer.model.CAConfigPaths.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -35,14 +41,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 class X509CertificateIntegrationTest {
-
-    private static final String CA_COMMON_NAME = "ca.common_name",
-            CA_ORGANIZATION = "ca.organization",
-            CA_ORGANIZATIONAL_UNIT = "ca.organizational_unit",
-            CA_LOCALITY = "ca.locality",
-            CA_STATE = "ca.state",
-            CA_COUNTRY = "ca.country",
-            CA_CERT_PATH = "ca.cert.path";
 
     @Autowired
     private MockMvc mvc;
@@ -55,6 +53,9 @@ class X509CertificateIntegrationTest {
 
     @Autowired
     private ConfigFileLoader configFileLoader;
+
+    @MockBean
+    private JavaMailSender mailSender;
 
     private static X509Certificate testCertificate;
     private X509CertificateEntry testCertificateEntry;
@@ -181,4 +182,26 @@ class X509CertificateIntegrationTest {
                 .andExpect(jsonPath("$.subject", is(testCertificate.getSubjectX500Principal().getName())))
                 .andExpect(jsonPath("$.issuer", is(testCertificate.getIssuerX500Principal().getName())));
     }
+
+    @Test
+    void testGenerateKeys() throws Exception {
+        MimeMessage mimeMessage = Mockito.mock(MimeMessage.class);
+        Mockito.when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        Mockito.doNothing().when(mailSender).send(Mockito.any(MimeMessage.class));
+
+        EmailRequest emailRequest = new EmailRequest();
+        emailRequest.setAddress(CA_EMAIL_ADDRESS);
+
+        mvc.perform(MockMvcRequestBuilders.post("/certificates/generate-keys")
+                        .content(objectMapper.writeValueAsString(emailRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.pemContent").exists())
+                .andReturn();
+
+        // Optionally verify if the email was "sent"
+        Mockito.verify(mailSender, Mockito.times(1)).send(Mockito.any(MimeMessage.class));
+    }
+
 }
