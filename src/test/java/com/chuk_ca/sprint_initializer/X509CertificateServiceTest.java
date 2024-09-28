@@ -151,11 +151,11 @@ class X509CertificateServiceTest {
         // Scenario 2: Test with a random string
         String randomString = "random_invalid_certificate_string";
         certificateRequest.setPemContent(randomString);
-        assertThrows(CertificateException.class, () -> {certificateService.validateCertificate(certificateRequest);});
+        assertThrows(CertificateException.class, () -> certificateService.validateCertificate(certificateRequest));
 
         // Scenario 3: Test with a tampered certificate
         certificateRequest.setPemContent(tamperCertificate(X509CertificateUtils.convertCertificateToPEM(testCertificate)));
-        assertThrows(SignatureException.class, () -> {certificateService.validateCertificate(certificateRequest);});
+        assertThrows(SignatureException.class, () -> certificateService.validateCertificate(certificateRequest));
 
         // Creating a test X509CertificateCreateRequest
         X509CertificateCreateRequest certificateCreateRequest = new X509CertificateCreateRequest();
@@ -172,7 +172,7 @@ class X509CertificateServiceTest {
         certificateCreateRequest.setNotAfter(testCertificate.getNotBefore());
         String expiredCertificatePEM = certificateService.createCertificateAsPEM(certificateCreateRequest);
         certificateRequest.setPemContent(expiredCertificatePEM);
-        assertThrows(CertificateExpiredException.class, () -> {certificateService.validateCertificate(certificateRequest);});
+        assertThrows(CertificateExpiredException.class, () -> certificateService.validateCertificate(certificateRequest));
 
         // Scenario 5: Test with a not yet valid certificate
         certificateCreateRequest.setNotBefore(testCertificate.getNotAfter());
