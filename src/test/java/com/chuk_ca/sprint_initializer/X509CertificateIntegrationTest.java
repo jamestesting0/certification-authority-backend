@@ -33,34 +33,30 @@ import java.util.Properties;
 import static com.chuk_ca.sprint_initializer.model.CAConfigPaths.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 class X509CertificateIntegrationTest {
 
+    private static X509Certificate testCertificate;
+    private static Properties caProperties;
     @Autowired
     private MockMvc mvc;
-
     @Autowired
     private X509CertificateEntryRepository certificateEntryRepository;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private ConfigFileLoader configFileLoader;
-
     @MockBean
     private JavaMailSender mailSender;
-
-    private static X509Certificate testCertificate;
     private X509CertificateEntry testCertificateEntry;
     private X509CertificateRequest testCertificateRequest;
-    private static Properties caProperties;
 
     @BeforeEach
     void setup() throws IOException, CertificateException {

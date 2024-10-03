@@ -2,7 +2,6 @@ package com.chuk_ca.sprint_initializer.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 

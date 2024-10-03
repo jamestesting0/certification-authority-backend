@@ -17,7 +17,9 @@ import org.springframework.core.io.InputStreamSource;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -41,7 +43,7 @@ public class X509CertificateUtils {
     public static X500Name createX500Name(String commonName, String organization, String organizationalUnit,
                                           String locality, String state, String country) {
         return new X500Name(
-                new RDN[] {
+                new RDN[]{
                         createRDN(BCStyle.CN, commonName),
                         createRDN(BCStyle.O, organization),
                         createRDN(BCStyle.OU, organizationalUnit),
@@ -92,11 +94,9 @@ public class X509CertificateUtils {
 
             if (object instanceof PEMKeyPair keyPair) {
                 return converter.getPrivateKey(keyPair.getPrivateKeyInfo());
-            }
-            else if (object instanceof PrivateKeyInfo privateKeyInfo) {
+            } else if (object instanceof PrivateKeyInfo privateKeyInfo) {
                 return converter.getPrivateKey(privateKeyInfo);
-            }
-            else {
+            } else {
                 throw new GeneralSecurityException("Invalid private key format");
             }
         }

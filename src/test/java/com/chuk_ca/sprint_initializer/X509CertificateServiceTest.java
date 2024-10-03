@@ -57,13 +57,10 @@ class X509CertificateServiceTest {
     private static X509Certificate testCertificate;
     private static X509CertificateEntry testCertificateEntry;
     private static Properties caProperties;
-
     @Autowired
     private X509CertificateService certificateService;
-
     @Autowired
     private X509CertificateEntryRepository certificateEntryRepository;
-
     @Autowired
     private ConfigFileLoader configFileLoader;
 

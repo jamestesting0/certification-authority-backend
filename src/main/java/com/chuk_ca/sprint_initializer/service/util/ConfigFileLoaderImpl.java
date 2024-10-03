@@ -12,7 +12,6 @@ import java.util.Properties;
 @Component
 public class ConfigFileLoaderImpl implements ConfigFileLoader {
     private static final String FILE_PATH_PREFIX = "classpath:config/";
-
     private final ResourceLoader resourceLoader;
 
     @Autowired

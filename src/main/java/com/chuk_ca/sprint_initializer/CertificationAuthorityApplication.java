@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 @SpringBootApplication
 @EnableCaching
 public class CertificationAuthorityApplication {
-	public static void main(String[] args){
-		SpringApplication.run(CertificationAuthorityApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CertificationAuthorityApplication.class, args);
+    }
 }

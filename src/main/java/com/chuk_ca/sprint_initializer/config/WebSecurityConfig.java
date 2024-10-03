@@ -9,15 +9,15 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig{
+public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(
-                requests -> requests
-                        // .requestMatchers("/certificates/validate").permitAll()
-                        // .anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                        requests -> requests
+                                // .requestMatchers("/certificates/validate").permitAll()
+                                // .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 .oauth2Login(
                         customizer -> customizer

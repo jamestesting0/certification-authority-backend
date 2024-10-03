@@ -13,7 +13,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.*;
-import java.security.cert.*;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
@@ -82,7 +85,7 @@ public class X509CertificateController {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate is not yet valid.");
         } catch (CertificateException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate is encoded incorrectly.");
-        }  catch (NoSuchProviderException | InvalidKeyException e) {
+        } catch (NoSuchProviderException | InvalidKeyException e) {
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Internal server error.");
         } catch (NoSuchAlgorithmException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate's signature algorithm is invalid.");
