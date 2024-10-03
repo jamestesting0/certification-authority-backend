@@ -54,6 +54,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
 class X509CertificateServiceTest {
+    private static X509Certificate testCertificate;
+    private static X509CertificateEntry testCertificateEntry;
+    private static Properties caProperties;
+
     @Autowired
     private X509CertificateService certificateService;
 
@@ -62,10 +66,6 @@ class X509CertificateServiceTest {
 
     @Autowired
     private ConfigFileLoader configFileLoader;
-
-    private static X509Certificate testCertificate;
-    private static X509CertificateEntry testCertificateEntry;
-    private static Properties caProperties;
 
     @BeforeEach
     void setup() throws IOException, CertificateException {
@@ -217,5 +217,12 @@ class X509CertificateServiceTest {
         MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
         assertEquals(1, receivedMessages.length);
         assertEquals(caProperties.getProperty(CA_EMAIL_ADDRESS), receivedMessages[0].getAllRecipients()[0].toString());
+    }
+
+    @Test
+    void testGetCAPublicKey() throws IOException {
+        String publicKeyPEM = certificateService.getCAPublicKey();
+
+        assertEquals(publicKeyPEM, X509CertificateUtils.convertPublicKeyToPEM(testCertificate.getPublicKey()));
     }
 }

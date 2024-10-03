@@ -114,4 +114,9 @@ public class X509CertificateServiceImpl implements X509CertificateService{
                 X509CertificateUtils.stringToInputStreamSource(pemContent)
         );
     }
+
+    @Override
+    public String getCAPublicKey() throws IOException {
+        return X509CertificateUtils.convertPublicKeyToPEM(certificateFactory.getCACertificate().getPublicKey());
+    }
 }

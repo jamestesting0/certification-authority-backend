@@ -29,4 +29,6 @@ public interface X509CertificateService {
     KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException;
 
     void sendPrivateKey(EmailRequest emailRequest, PrivateKey privateKey) throws IOException, MessagingException;
+
+    String getCAPublicKey() throws IOException;
 }

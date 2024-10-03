@@ -116,4 +116,9 @@ public class X509CertificateFactoryImpl implements X509CertificateFactory {
         keyPairGenerator.initialize(2048);
         return keyPairGenerator.generateKeyPair();
     }
+
+    @Override
+    public X509Certificate getCACertificate() {
+        return caCertificate;
+    }
 }

@@ -155,7 +155,6 @@ class X509CertificateIntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // Get the response content as a string
         String responseContent = result.getResponse().getContentAsString();
 
         assertNotNull(responseContent);
@@ -202,6 +201,20 @@ class X509CertificateIntegrationTest {
 
         // Optionally verify if the email was "sent"
         Mockito.verify(mailSender, Mockito.times(1)).send(Mockito.any(MimeMessage.class));
+    }
+
+    @Test
+    void testGetCAPublicKey() throws Exception {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get("/certificates/ca-public-key")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String responseContent = result.getResponse().getContentAsString();
+
+        assertNotNull(responseContent);
+        assertTrue(responseContent.contains("-----BEGIN PUBLIC KEY-----"));
     }
 
 }

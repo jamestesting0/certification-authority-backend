@@ -106,17 +106,25 @@ public class X509CertificateController {
 
     @PostMapping("certificates/generate-keys")
     public ResponseEntity<PublicKeyResponse> generateKeys(@RequestBody EmailRequest emailRequest) {
-        PublicKeyResponse publicKeyResponse = new PublicKeyResponse();
         try {
             KeyPair keyPair = certificateService.generateKeyPair();
+            PublicKeyResponse publicKeyResponse = new PublicKeyResponse();
             publicKeyResponse.setPemContent(X509CertificateUtils.convertPublicKeyToPEM(keyPair.getPublic()));
             certificateService.sendPrivateKey(emailRequest, keyPair.getPrivate());
+            return ResponseEntity.ok(publicKeyResponse);
         } catch (NoSuchAlgorithmException | NoSuchProviderException | IOException e) {
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Internal server error.");
         } catch (MessagingException e) {
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Failed to send the private key via Email.");
         }
+    }
 
-        return ResponseEntity.ok(publicKeyResponse);
+    @GetMapping("certificates/ca-public-key")
+    public ResponseEntity<String> getCAPublicKey() {
+        try {
+            return ResponseEntity.ok(certificateService.getCAPublicKey());
+        } catch (IOException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "Failed to get the CA's certificate.");
+        }
     }
 }
