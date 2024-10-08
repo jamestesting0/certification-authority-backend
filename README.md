@@ -64,7 +64,7 @@ com.chuk_ca.sprint_initializer
 └── CertificationAuthorityApplication # Main application class for initializing the Spring Boot application
 ```
 
-### Service
+### Service UML
 ![Service UML](./assets/images/certificate_service_uml.png)
 
 ### Tests
