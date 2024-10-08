@@ -1,5 +1,25 @@
 # CUHK Certification Authority (Backend)
 
+## Table of Contents
+1. [Run Environment](#run-environment)
+  - [Configurations](#configurations)
+  - [Quickstart](#quickstart)
+2. [Structure](#structure)
+  - [Files](#files)
+  - [Service UML](#service-uml)
+  - [Tests](#tests)
+3. [API Endpoints](#api-endpoints)
+  - [Get All Certificate Entries](#get-all-certificate-entries)
+  - [Get Certificate Entry by ID](#get-certificate-entry-by-id)
+  - [Delete Certificate Entry](#delete-certificate-entry)
+  - [Save Certificate Entry](#save-certificate-entry)
+  - [Create Certificate](#create-certificate)
+  - [Validate Certificate](#validate-certificate)
+  - [View Certificate as JSON](#view-certificate-as-json)
+  - [Generate Key Pair](#generate-key-pair)
+  - [Get CA Public Key](#get-ca-public-key)
+4. [Next Step](#next-step)
+
 ## Run Environment
 ### Configurations
 1. Language: Java 17
@@ -76,7 +96,7 @@ com.chuk_ca.sprint_initializer
 
 
 ## API Endpoints
-### 1. Get All Certificate Entries
+### Get All Certificate Entries
 - **URL**: `/certificates`
 - **Method**: `GET`
 - **Description**: Retrieves a list of all certificate entries.
@@ -95,7 +115,7 @@ com.chuk_ca.sprint_initializer
   ]
   ```
 
-### 2. Get Certificate Entry by ID
+### Get Certificate Entry by ID
 - **URL**: `/certificates/{certificateId}`
 - **Method**: `GET`
 - **Description**: Retrieves a certificate entry by its ID.
@@ -114,7 +134,7 @@ com.chuk_ca.sprint_initializer
   }
   ```
 
-### 3. Delete Certificate Entry
+### Delete Certificate Entry
 - **URL**: `/certificates/{certificateId}`
 - **Method**: `DELETE`
 - **Description**: Deletes a certificate entry by its ID.
@@ -123,7 +143,7 @@ com.chuk_ca.sprint_initializer
 - **Response**:
   - **204 NO CONTENT**: If the deletion was successful.
 
-### 4. Save Certificate Entry
+### Save Certificate Entry
 - **URL**: `/certificates`
 - **Method**: `POST`
 - **Description**: Saves a new certificate entry.
@@ -138,7 +158,7 @@ com.chuk_ca.sprint_initializer
 - **Response**:
   - **200 OK**: Returns the saved `X509CertificateEntry` object.
 
-### 5. Create Certificate
+### Create Certificate
 - **URL**: `/certificates/create`
 - **Method**: `POST`
 - **Description**: Generates an X509 certificate as a PEM file.
@@ -160,7 +180,7 @@ com.chuk_ca.sprint_initializer
   - **200 OK**: Returns the PEM-encoded certificate.
   - **400 BAD REQUEST**: If the request is invalid (e.g., invalid public key, certificate errors).
 
-### 6. Validate Certificate
+### Validate Certificate
 - **URL**: `/certificates/validate`
 - **Method**: `POST`
 - **Description**: Validates an X509 certificate.
@@ -174,7 +194,7 @@ com.chuk_ca.sprint_initializer
   - **200 OK**: The certificate is valid.
   - **400 BAD REQUEST**: If the certificate is invalid or not yet valid/expired.
 
-### 7. View Certificate as JSON
+### View Certificate as JSON
 - **URL**: `/certificates/view-json`
 - **Method**: `POST`
 - **Description**: Converts the X509 certificate to a JSON response.
@@ -187,7 +207,7 @@ com.chuk_ca.sprint_initializer
 - **Response**:
   - **200 OK**: Returns the certificate details in JSON format.
 
-### 8. Generate Key Pair
+### Generate Key Pair
 - **URL**: `/certificates/generate-keys`
 - **Method**: `POST`
 - **Description**: Generates a key pair and sends the private key via email.
@@ -203,7 +223,7 @@ com.chuk_ca.sprint_initializer
   - **200 OK**: Returns the public key in PEM format.
   - **500 INTERNAL SERVER ERROR**: If there is an error in key generation or email sending.
 
-### 9. Get CA Public Key
+### Get CA Public Key
 - **URL**: `/certificates/ca-public-key`
 - **Method**: `GET`
 - **Description**: Retrieves the CA's public key.
