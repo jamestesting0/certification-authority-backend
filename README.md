@@ -2,22 +2,22 @@
 
 ## Table of Contents
 1. [Run Environment](#run-environment)
-  - [Configurations](#configurations)
-  - [Quickstart](#quickstart)
+   1. [Configurations](#configurations)
+   2. [Quickstart](#quickstart)
 2. [Structure](#structure)
-  - [Files](#files)
-  - [Service UML](#service-uml)
-  - [Tests](#tests)
+   1. [Files](#files)
+   2. [Service UML](#service-uml)
+   3. [Tests](#tests)
 3. [API Endpoints](#api-endpoints)
-  - [Get All Certificate Entries](#get-all-certificate-entries)
-  - [Get Certificate Entry by ID](#get-certificate-entry-by-id)
-  - [Delete Certificate Entry](#delete-certificate-entry)
-  - [Save Certificate Entry](#save-certificate-entry)
-  - [Create Certificate](#create-certificate)
-  - [Validate Certificate](#validate-certificate)
-  - [View Certificate as JSON](#view-certificate-as-json)
-  - [Generate Key Pair](#generate-key-pair)
-  - [Get CA Public Key](#get-ca-public-key)
+   1. [Get All Certificate Entries](#get-all-certificate-entries)
+   2. [Get Certificate Entry by ID](#get-certificate-entry-by-id)
+   3. [Delete Certificate Entry](#delete-certificate-entry)
+   4. [Save Certificate Entry](#save-certificate-entry)
+   5. [Create Certificate](#create-certificate)
+   6. [Validate Certificate](#validate-certificate)
+   7. [View Certificate as JSON](#view-certificate-as-json)
+   8. [Generate Key Pair](#generate-key-pair)
+   9. [Get CA Public Key](#get-ca-public-key)
 4. [Next Step](#next-step)
 
 ## Run Environment
@@ -28,6 +28,7 @@
 4. Caching: Hazelcast
 5. OAuth: GitHub
 6. Email: Gmail
+7. Deployment: Docker Container (TODO)
 
 CA related configurations stored in `resources/config/ca.properties`
 
@@ -36,7 +37,7 @@ Application related configurations stored in `resources/application.properties`
 ### Quickstart
 1. Build Dependencies
 ```shell
-./gradlew clean build
+./gradlew clean build -x test
 ```
 2. Run `CertificationAuthorityApplication`
 
@@ -146,7 +147,7 @@ com.chuk_ca.sprint_initializer
 ### Save Certificate Entry
 - **URL**: `/certificates`
 - **Method**: `POST`
-- **Description**: Saves a new certificate entry.
+- **Description**: Save a new certificate entry.
 - **Request Body**:
   ```json
   {
@@ -232,3 +233,7 @@ com.chuk_ca.sprint_initializer
   - **400 BAD REQUEST**: If there is an error fetching the CA's certificate.
 
 ## Next Step
+### Staff Portal
+### User Portal
+### CSR
+### TSL

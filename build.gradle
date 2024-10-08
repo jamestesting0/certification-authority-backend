@@ -23,6 +23,10 @@ repositories {
 	mavenCentral()
 }
 
+bootJar {
+	archiveFileName = 'certificate-authority-application.jar'
+}
+
 dependencies {
 	// Spring Boot
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
