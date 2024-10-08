@@ -76,5 +76,139 @@ com.chuk_ca.sprint_initializer
 
 
 ## API Endpoints
-## Getting Started
+### 1. Get All Certificate Entries
+- **URL**: `/certificates`
+- **Method**: `GET`
+- **Description**: Retrieves a list of all certificate entries.
+- **Response**:
+  - **200 OK**: Returns a list of `X509CertificateEntry`.
+  - **204 NO CONTENT**: If no certificate entries are found.
+- **Example Response**:
+  ```json
+  [
+    {
+      "id": 1,
+      "certificateName": "example",
+      "validFrom": "2023-01-01",
+      "validUntil": "2024-01-01"
+    }
+  ]
+  ```
+
+### 2. Get Certificate Entry by ID
+- **URL**: `/certificates/{certificateId}`
+- **Method**: `GET`
+- **Description**: Retrieves a certificate entry by its ID.
+- **Path Parameters**:
+  - `certificateId` (Long): The ID of the certificate entry.
+- **Response**:
+  - **200 OK**: Returns the `X509CertificateEntry` object.
+  - **404 NOT FOUND**: If the certificate entry is not found.
+- **Example Response**:
+  ```json
+  {
+    "id": 1,
+    "certificateName": "example",
+    "validFrom": "2023-01-01",
+    "validUntil": "2024-01-01"
+  }
+  ```
+
+### 3. Delete Certificate Entry
+- **URL**: `/certificates/{certificateId}`
+- **Method**: `DELETE`
+- **Description**: Deletes a certificate entry by its ID.
+- **Path Parameters**:
+  - `certificateId` (Long): The ID of the certificate to delete.
+- **Response**:
+  - **204 NO CONTENT**: If the deletion was successful.
+
+### 4. Save Certificate Entry
+- **URL**: `/certificates`
+- **Method**: `POST`
+- **Description**: Saves a new certificate entry.
+- **Request Body**:
+  ```json
+  {
+    "certificateName": "example",
+    "validFrom": "2023-01-01",
+    "validUntil": "2024-01-01"
+  }
+  ```
+- **Response**:
+  - **200 OK**: Returns the saved `X509CertificateEntry` object.
+
+### 5. Create Certificate
+- **URL**: `/certificates/create`
+- **Method**: `POST`
+- **Description**: Generates an X509 certificate as a PEM file.
+- **Request Body**:
+  ```json
+  {
+    "publicKey": "base64-encoded-public-key",
+    "commonName": "example.com",
+    "organization": "Example Org",
+    "organizationUnit": "IT",
+    "locality": "City",
+    "state": "State",
+    "country": "Country",
+    "notBefore": "2023-01-01",
+    "notAfter": "2024-01-01"
+  }
+  ```
+- **Response**:
+  - **200 OK**: Returns the PEM-encoded certificate.
+  - **400 BAD REQUEST**: If the request is invalid (e.g., invalid public key, certificate errors).
+
+### 6. Validate Certificate
+- **URL**: `/certificates/validate`
+- **Method**: `POST`
+- **Description**: Validates an X509 certificate.
+- **Request Body**:
+  ```json
+  {
+    "pemContent": "PEM encoded certificate"
+  }
+  ```
+- **Response**:
+  - **200 OK**: The certificate is valid.
+  - **400 BAD REQUEST**: If the certificate is invalid or not yet valid/expired.
+
+### 7. View Certificate as JSON
+- **URL**: `/certificates/view-json`
+- **Method**: `POST`
+- **Description**: Converts the X509 certificate to a JSON response.
+- **Request Body**:
+  ```json
+  {
+    "pemContent": "PEM encoded certificate"
+  }
+  ```
+- **Response**:
+  - **200 OK**: Returns the certificate details in JSON format.
+
+### 8. Generate Key Pair
+- **URL**: `/certificates/generate-keys`
+- **Method**: `POST`
+- **Description**: Generates a key pair and sends the private key via email.
+- **Request Body**:
+  ```json
+  {
+    "address": "email@example.com",
+    "subject": "Private Key",
+    "text": "Your private key"
+  }
+  ```
+- **Response**:
+  - **200 OK**: Returns the public key in PEM format.
+  - **500 INTERNAL SERVER ERROR**: If there is an error in key generation or email sending.
+
+### 9. Get CA Public Key
+- **URL**: `/certificates/ca-public-key`
+- **Method**: `GET`
+- **Description**: Retrieves the CA's public key.
+- **Response**:
+  - **200 OK**: Returns the PEM-encoded CA public key.
+  - **400 BAD REQUEST**: If there is an error fetching the CA's certificate.
+
 ## Next Step
