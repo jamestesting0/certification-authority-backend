@@ -2,8 +2,8 @@
 
 ## Run Environment
 ### Configurations
-1. API Frameword: [SpringBoot](https://spring.io/projects/spring-boot)
-2. Language: Java 17
+1. Language: Java 17
+2. Framework: [SpringBoot](https://spring.io/projects/spring-boot)
 3. Database: Postgresql
 4. Caching: Hazelcast
 5. OAuth: GitHub
