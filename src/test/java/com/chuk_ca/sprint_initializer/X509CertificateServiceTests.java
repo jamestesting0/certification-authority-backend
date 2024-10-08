@@ -7,8 +7,8 @@ import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateEntryRepository;
-import com.chuk_ca.sprint_initializer.service.X509CertificateService;
-import com.chuk_ca.sprint_initializer.service.X509CertificateServiceImpl;
+import com.chuk_ca.sprint_initializer.service.x509.X509CertificateService;
+import com.chuk_ca.sprint_initializer.service.x509.X509CertificateServiceImpl;
 import com.chuk_ca.sprint_initializer.service.util.ConfigFileLoader;
 import com.chuk_ca.sprint_initializer.service.util.EmailSender;
 import com.chuk_ca.sprint_initializer.service.util.EmailSenderImpl;
@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ComponentScan(basePackages = "com.chuk_ca.sprint_initializer")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-class X509CertificateServiceTest {
+class X509CertificateServiceTests {
     private static X509Certificate testCertificate;
     private static X509CertificateEntry testCertificateEntry;
     private static Properties caProperties;
@@ -67,7 +67,7 @@ class X509CertificateServiceTest {
     @BeforeEach
     void setup() throws IOException, CertificateException {
         // Set the CA's properties
-        caProperties = configFileLoader.loadPropertiesFromFile("x509.properties");
+        caProperties = configFileLoader.loadPropertiesFromFile("ca.properties");
         String caCertPath = caProperties.getProperty(CA_CERT_PATH);
 
         // Set the test certificate

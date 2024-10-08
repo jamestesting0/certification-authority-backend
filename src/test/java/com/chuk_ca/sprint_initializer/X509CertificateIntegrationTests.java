@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
-class X509CertificateIntegrationTest {
+class X509CertificateIntegrationTests {
 
     private static X509Certificate testCertificate;
     private static Properties caProperties;
@@ -61,7 +61,7 @@ class X509CertificateIntegrationTest {
     @BeforeEach
     void setup() throws IOException, CertificateException {
         // Load CA properties
-        caProperties = configFileLoader.loadPropertiesFromFile("x509.properties");
+        caProperties = configFileLoader.loadPropertiesFromFile("ca.properties");
 
         // Generate a test certificate
         String caCertPath = caProperties.getProperty(CA_CERT_PATH);

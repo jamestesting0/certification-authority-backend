@@ -1,4 +1,4 @@
-package com.chuk_ca.sprint_initializer.service;
+package com.chuk_ca.sprint_initializer.service.x509;
 
 import com.chuk_ca.sprint_initializer.model.EmailRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
@@ -6,8 +6,6 @@ import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
 import com.chuk_ca.sprint_initializer.service.dao.DAO;
 import com.chuk_ca.sprint_initializer.service.util.EmailSender;
-import com.chuk_ca.sprint_initializer.service.x509.X509CertificateFactory;
-import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
 import jakarta.mail.MessagingException;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;

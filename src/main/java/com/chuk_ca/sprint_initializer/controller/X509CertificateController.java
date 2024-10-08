@@ -1,7 +1,7 @@
 package com.chuk_ca.sprint_initializer.controller;
 
 import com.chuk_ca.sprint_initializer.model.*;
-import com.chuk_ca.sprint_initializer.service.X509CertificateService;
+import com.chuk_ca.sprint_initializer.service.x509.X509CertificateService;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
 import jakarta.mail.MessagingException;
 import org.bouncycastle.operator.OperatorCreationException;

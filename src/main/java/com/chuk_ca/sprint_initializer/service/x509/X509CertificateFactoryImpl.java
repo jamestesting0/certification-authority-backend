@@ -35,7 +35,7 @@ public class X509CertificateFactoryImpl implements X509CertificateFactory {
     private final X509Certificate caCertificate;
 
     public X509CertificateFactoryImpl(ConfigFileLoader configLoader) throws IOException, GeneralSecurityException, OperatorCreationException {
-        Properties properties = configLoader.loadPropertiesFromFile("x509.properties");
+        Properties properties = configLoader.loadPropertiesFromFile("ca.properties");
         this.issuer = X509CertificateUtils.createX500Name(
                 properties.getProperty(CA_COMMON_NAME),
                 properties.getProperty(CA_ORGANIZATION),

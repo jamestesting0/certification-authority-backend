@@ -1,4 +1,4 @@
-package com.chuk_ca.sprint_initializer.service;
+package com.chuk_ca.sprint_initializer.service.x509;
 
 import com.chuk_ca.sprint_initializer.model.EmailRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
