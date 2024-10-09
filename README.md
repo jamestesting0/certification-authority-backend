@@ -1,14 +1,15 @@
 # CUHK Certification Authority (Backend)
 
 ## Table of Contents
-1. [Run Environment](#run-environment)
+1. [Introduction](#introduction)
+2. [Run Environment](#run-environment)
    1. [Configurations](#configurations)
    2. [Quickstart](#quickstart)
-2. [Structure](#structure)
+3. [Structure](#structure)
    1. [Files](#files)
    2. [Service UML](#service-uml)
    3. [Tests](#tests)
-3. [API Endpoints](#api-endpoints)
+4. [API Endpoints](#api-endpoints)
    1. [Get All Certificate Entries](#get-all-certificate-entries)
    2. [Get Certificate Entry by ID](#get-certificate-entry-by-id)
    3. [Delete Certificate Entry](#delete-certificate-entry)
@@ -18,7 +19,15 @@
    7. [View Certificate as JSON](#view-certificate-as-json)
    8. [Generate Key Pair](#generate-key-pair)
    9. [Get CA Public Key](#get-ca-public-key)
-4. [Next Step](#next-step)
+5. [Next Step](#next-step)
+   1. [Staff Portal](#staff-portal)
+   2. [User Portal](#user-portal)
+   3. [Email Ticketing](#email-ticketing)
+   4. [ACME Server](#acme-server)
+   5. [Security](#security)
+
+## Introduction
+
 
 ## Run Environment
 ### Configurations
@@ -35,11 +44,15 @@ CA related configurations stored in `resources/config/ca.properties`
 Application related configurations stored in `resources/application.properties`
 
 ### Quickstart
+**Intellij**
 1. Build Dependencies
 ```shell
 ./gradlew clean build -x test
 ```
+*Note: Tests are excluded from the build because an isolated test environment is not configured. This means the tests may fail if they are run during the build process.*
 2. Run `CertificationAuthorityApplication`
+
+**Docker Container** (TODO)
 
 ## Structure
 ### Files
@@ -59,6 +72,7 @@ com.chuk_ca.sprint_initializer
 │   ├── EmailRequest                  # Request DTO for emailing the private key
 │   ├── PublicKeyResponse             # Response DTO for creating the key pair
 │   ├── X509CertificateCreateRequest  # Request DTO for creating a X509 certificate
+│   ├── X509CertificateData           # Model containing the information needed for creating a X509 certificate
 │   ├── X509CertificateEntry          # Entity class representing a X509 certificate log entry in the database
 │   ├── X509CertificateViewRequest    # Request DTO for viewing a X509 certificate
 │   ├── X509CertificateViewResponse   # Response DTO for representing a X509 certificate in a view request
@@ -73,6 +87,7 @@ com.chuk_ca.sprint_initializer
 │   ├── util
 │   │   ├── ConfigFileLoader           # Interface for loading configuration files (specifically CA configurations)
 │   │   ├── ConfigFileLoaderImpl       # Implementation of the configuration file loader
+│   │   ├── CSRUtils                   # Utility class for handling CSR-related utilities
 │   │   ├── EmailSender                # Interface for sending emails
 │   │   └── EmailSenderImpl            # Implementation for sending emails
 │   └── x509
@@ -86,7 +101,7 @@ com.chuk_ca.sprint_initializer
 ```
 
 ### Service UML
-![Service UML](./assets/images/certificate_service_uml.png)
+![Service UML](assets/diagrams/certificate_service_uml.png)
 
 ### Tests
 `CertificationAuthorityApplicationTests`: test the application start up
@@ -226,6 +241,20 @@ com.chuk_ca.sprint_initializer
   - **400 BAD REQUEST**: If there is an error fetching the CA's certificate.
 
 ## Next Step
+Those are rough ideas for building a complete and usable certificate authority. All of the points listed below need to be further researched and evaluated.
 ### Staff Portal
+1. Handling of CA staff's identities using MongoDB like in 林工程师‘s demonstration?
+2. Able to track/view the issuance of certificate creations and view the ongoing CSRs. 
+3. Other...
 ### User Portal
-### TSL
+1. Guiding the user when it comes of certificate request. Such as creating the CSR and sending it. 
+2. Other...
+### Email Ticketing
+1. For managing the communication between the applicants and the CA.
+2. The ticketing system should be added to the staff portal.
+### ACME Server
+1. Automate the issuance of TSL certificate. 
+2. Check this [existing implementation](https://github.com/knrdl/acme-ca-server).
+### Security
+1. Secure storage of CA's own private key.
+2. Other...

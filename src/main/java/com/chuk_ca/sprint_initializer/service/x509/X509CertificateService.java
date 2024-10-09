@@ -22,7 +22,7 @@ public interface X509CertificateService {
 
     X509CertificateEntry saveCertificateEntry(X509CertificateEntry certificateEntry);
 
-    String createCertificateAsPEM(X509CertificateData certificateCreateRequest) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException;
+    String createCertificateAsPEM(X509CertificateData certificateData) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException;
 
     void validateCertificate(X509CertificateViewRequest certificateRequest) throws CertificateException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException;
 

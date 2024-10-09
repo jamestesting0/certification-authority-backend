@@ -52,10 +52,10 @@ public class X509CertificateServiceImpl implements X509CertificateService {
         return certificateEntryDAO.save(certificateEntry);
     }
 
-    public String createCertificateAsPEM(X509CertificateData certificateCreateRequest) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
+    public String createCertificateAsPEM(X509CertificateData certificateData) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
         // Process the public key as base64 string
         PublicKey publicKey;
-        try (PEMParser pemParser = new PEMParser(new StringReader(certificateCreateRequest.getPublicKey()))) {
+        try (PEMParser pemParser = new PEMParser(new StringReader(certificateData.getPublicKey()))) {
             Object object = pemParser.readObject();
 
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter().setProvider("BC");
@@ -69,20 +69,20 @@ public class X509CertificateServiceImpl implements X509CertificateService {
 
         // Create the subject name
         X500Name subject = X509CertificateUtils.createX500Name(
-                certificateCreateRequest.getCommonName(),
-                certificateCreateRequest.getOrganization(),
-                certificateCreateRequest.getOrganizationUnit(),
-                certificateCreateRequest.getLocality(),
-                certificateCreateRequest.getState(),
-                certificateCreateRequest.getCountry()
+                certificateData.getCommonName(),
+                certificateData.getOrganization(),
+                certificateData.getOrganizationUnit(),
+                certificateData.getLocality(),
+                certificateData.getState(),
+                certificateData.getCountry()
         );
 
         // Create the X509 certificate
         X509Certificate certificate = certificateFactory.generateCertificate(
                 publicKey,
                 subject,
-                certificateCreateRequest.getNotBefore(),
-                certificateCreateRequest.getNotAfter()
+                certificateData.getNotBefore(),
+                certificateData.getNotAfter()
         );
 
         return X509CertificateUtils.convertCertificateToPEM(certificate);
