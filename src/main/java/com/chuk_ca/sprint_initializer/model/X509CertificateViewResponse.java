@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class X509CertificateResponse {
+public class X509CertificateViewResponse {
     private int version;
     private String serialNumber;
     private String subject;

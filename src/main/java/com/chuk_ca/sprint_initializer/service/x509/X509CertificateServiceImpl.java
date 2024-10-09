@@ -1,9 +1,9 @@
 package com.chuk_ca.sprint_initializer.service.x509;
 
 import com.chuk_ca.sprint_initializer.model.EmailRequest;
-import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
+import com.chuk_ca.sprint_initializer.model.X509CertificateData;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
-import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
+import com.chuk_ca.sprint_initializer.model.X509CertificateViewRequest;
 import com.chuk_ca.sprint_initializer.service.dao.DAO;
 import com.chuk_ca.sprint_initializer.service.util.EmailSender;
 import jakarta.mail.MessagingException;
@@ -52,7 +52,7 @@ public class X509CertificateServiceImpl implements X509CertificateService {
         return certificateEntryDAO.save(certificateEntry);
     }
 
-    public String createCertificateAsPEM(X509CertificateCreateRequest certificateCreateRequest) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
+    public String createCertificateAsPEM(X509CertificateData certificateCreateRequest) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
         // Process the public key as base64 string
         PublicKey publicKey;
         try (PEMParser pemParser = new PEMParser(new StringReader(certificateCreateRequest.getPublicKey()))) {
@@ -88,7 +88,7 @@ public class X509CertificateServiceImpl implements X509CertificateService {
         return X509CertificateUtils.convertCertificateToPEM(certificate);
     }
 
-    public void validateCertificate(X509CertificateRequest certificateRequest) throws CertificateException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException {
+    public void validateCertificate(X509CertificateViewRequest certificateRequest) throws CertificateException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException {
         X509Certificate certificate = X509CertificateUtils.readCertificateFromPEM(certificateRequest.getPemContent());
         certificateFactory.validateCertificate(certificate);
     }

@@ -1,6 +1,6 @@
 package com.chuk_ca.sprint_initializer.service.x509;
 
-import com.chuk_ca.sprint_initializer.model.X509CertificateResponse;
+import com.chuk_ca.sprint_initializer.model.X509CertificateViewResponse;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERPrintableString;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -199,8 +199,8 @@ public class X509CertificateUtils {
         return sb.toString();
     }
 
-    public static X509CertificateResponse convertCertificateToJSON(X509Certificate certificate) {
-        X509CertificateResponse response = new X509CertificateResponse();
+    public static X509CertificateViewResponse convertCertificateToJSON(X509Certificate certificate) {
+        X509CertificateViewResponse response = new X509CertificateViewResponse();
         response.setVersion(certificate.getVersion());
         response.setSerialNumber(certificate.getSerialNumber().toString(16).toUpperCase());
         response.setSubject(certificate.getSubjectX500Principal().getName());

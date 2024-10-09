@@ -1,6 +1,7 @@
 package com.chuk_ca.sprint_initializer.controller;
 
 import com.chuk_ca.sprint_initializer.model.*;
+import com.chuk_ca.sprint_initializer.service.util.CSRUtils;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateService;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
 import jakarta.mail.MessagingException;
@@ -19,6 +20,7 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -63,8 +65,28 @@ public class X509CertificateController {
 
     @PostMapping("certificates/create")
     public ResponseEntity<String> createCertificate(@RequestBody X509CertificateCreateRequest certificateCreateRequest) {
+        X509CertificateData certificateData = new X509CertificateData();
         try {
-            return ResponseEntity.ok(certificateService.createCertificateAsPEM(certificateCreateRequest));
+            Map<String, String> certificateAttrs = CSRUtils.parseCSR(certificateCreateRequest.getCsr());
+            certificateData.setPublicKey(certificateAttrs.get("Public Key"));
+            certificateData.setCommonName(certificateAttrs.get("Common Name (CN)"));
+            certificateData.setOrganization(certificateAttrs.get("Organization (O)"));
+            certificateData.setOrganizationUnit(certificateAttrs.get("Organizational Unit (OU)"));
+            certificateData.setCountry(certificateAttrs.get("Country (C)"));
+            certificateData.setState(certificateAttrs.get("State/Province (ST)"));
+            certificateData.setLocality(certificateAttrs.get("Locality (L)"));
+            certificateData.setNotBefore(certificateCreateRequest.getNotBefore());
+            certificateData.setNotAfter(certificateCreateRequest.getNotAfter());
+        } catch (IOException e) {
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Something went wrong when parsing the CSR.");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "The key algorithm should be RSA.");
+        } catch (InvalidKeySpecException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "The public key provided in the CSR is invalid.");
+        }
+
+        try {
+            return ResponseEntity.ok(certificateService.createCertificateAsPEM(certificateData));
         } catch (CertificateException | OperatorCreationException e) {
             throw new ResponseStatusException(BAD_REQUEST);
         } catch (InvalidKeySpecException e) {
@@ -75,9 +97,9 @@ public class X509CertificateController {
     }
 
     @PostMapping("certificates/validate")
-    public ResponseEntity<String> validateCertificate(@RequestBody X509CertificateRequest certificateRequest) {
+    public ResponseEntity<String> validateCertificate(@RequestBody X509CertificateViewRequest certificateViewRequest) {
         try {
-            certificateService.validateCertificate(certificateRequest);
+            certificateService.validateCertificate(certificateViewRequest);
             return ResponseEntity.ok("The certificate is valid.");
         } catch (CertificateExpiredException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate has expired.");
@@ -97,10 +119,10 @@ public class X509CertificateController {
     }
 
     @PostMapping("certificates/view-json")
-    public ResponseEntity<X509CertificateResponse> viewCertificate(@RequestBody X509CertificateRequest certificateRequest) {
+    public ResponseEntity<X509CertificateViewResponse> viewCertificate(@RequestBody X509CertificateViewRequest certificateViewRequest) {
         try {
-            X509Certificate certificate = X509CertificateUtils.readCertificateFromPEM(certificateRequest.getPemContent());
-            X509CertificateResponse response = X509CertificateUtils.convertCertificateToJSON(certificate);
+            X509Certificate certificate = X509CertificateUtils.readCertificateFromPEM(certificateViewRequest.getPemContent());
+            X509CertificateViewResponse response = X509CertificateUtils.convertCertificateToJSON(certificate);
             return ResponseEntity.ok(response);
         } catch (IOException | CertificateException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The certificate is invalid.");

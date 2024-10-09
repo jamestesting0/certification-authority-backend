@@ -1,9 +1,9 @@
 package com.chuk_ca.sprint_initializer.service.x509;
 
 import com.chuk_ca.sprint_initializer.model.EmailRequest;
-import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
+import com.chuk_ca.sprint_initializer.model.X509CertificateData;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
-import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
+import com.chuk_ca.sprint_initializer.model.X509CertificateViewRequest;
 import jakarta.mail.MessagingException;
 import org.bouncycastle.operator.OperatorCreationException;
 
@@ -22,9 +22,9 @@ public interface X509CertificateService {
 
     X509CertificateEntry saveCertificateEntry(X509CertificateEntry certificateEntry);
 
-    String createCertificateAsPEM(X509CertificateCreateRequest certificateCreateRequest) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException;
+    String createCertificateAsPEM(X509CertificateData certificateCreateRequest) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException;
 
-    void validateCertificate(X509CertificateRequest certificateRequest) throws CertificateException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException;
+    void validateCertificate(X509CertificateViewRequest certificateRequest) throws CertificateException, IOException, NoSuchAlgorithmException, SignatureException, InvalidKeyException, NoSuchProviderException;
 
     KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException;
 
