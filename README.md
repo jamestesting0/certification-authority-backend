@@ -27,7 +27,18 @@
    5. [Security](#security)
 
 ## Introduction
-
+A service designed to manage and issuance of X509 certificates. It serves as a backend for a Certification Authority (CA), 
+handling various certificate-related operations such as creating, storing, and validating certificates, as well as processing 
+Certificate Signing Requests (CSRs).
+### Disclaimers
+- Done in 2 weeks...
+- Probably have some organizational issues
+- Only provide the minimum functionalities
+- No API optimizations except for a simple cache system
+- Limited in code documentations
+- Some of the features are just there to show what can be done.
+  For instance, 
+sending an Email to a user and authentication with GitHub, which are not necessarily relevant.
 
 ## Run Environment
 ### Configurations
@@ -258,4 +269,5 @@ Those are rough ideas for building a complete and usable certificate authority. 
 2. Check this [existing implementation](https://github.com/knrdl/acme-ca-server).
 ### Security
 1. Secure storage of CA's own private key.
-2. Other...
+2. ACLs for managing the API permissions.
+3. Other...
