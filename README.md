@@ -51,7 +51,7 @@ Application related configurations stored in `resources/application.properties`
 ```
 *Note: Tests are excluded from the build because an isolated test environment is not configured. This means the tests may fail if they are run during the build process.*
 
-2. Run `CertificationAuthorityApplication`
+2. Run `CertificationAuthorityApplication` with Intellij configuration
 
 **Docker Container** (TODO)
 
