@@ -3,9 +3,9 @@ package com.chuk_ca.sprint_initializer;
 import com.chuk_ca.sprint_initializer.config.BouncyCastleConfig;
 import com.chuk_ca.sprint_initializer.config.HazelcastConfig;
 import com.chuk_ca.sprint_initializer.model.EmailRequest;
-import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
+import com.chuk_ca.sprint_initializer.model.X509CertificateData;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
-import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
+import com.chuk_ca.sprint_initializer.model.X509CertificateViewRequest;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateEntryRepository;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateService;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateServiceImpl;
@@ -113,7 +113,7 @@ class X509CertificateServiceTests {
 
     @Test
     void testCreateCertificate() throws IOException, CertificateException, InvalidKeySpecException, OperatorCreationException {
-        X509CertificateCreateRequest certificateCreateRequest = new X509CertificateCreateRequest();
+        X509CertificateData certificateCreateRequest = new X509CertificateData();
         certificateCreateRequest.setPublicKey(X509CertificateUtils.convertPublicKeyToPEM(testCertificate.getPublicKey()));
         certificateCreateRequest.setCommonName(caProperties.getProperty(CA_COMMON_NAME));
         certificateCreateRequest.setOrganization(caProperties.getProperty(CA_ORGANIZATION));
@@ -139,7 +139,7 @@ class X509CertificateServiceTests {
 
     @Test
     void testValidateCertificate() throws Exception {
-        X509CertificateRequest certificateRequest = new X509CertificateRequest();
+        X509CertificateViewRequest certificateRequest = new X509CertificateViewRequest();
 
         // Scenario 1: Test with a valid certificate
         certificateRequest.setPemContent(X509CertificateUtils.convertCertificateToPEM(testCertificate));
@@ -154,8 +154,8 @@ class X509CertificateServiceTests {
         certificateRequest.setPemContent(tamperCertificate(X509CertificateUtils.convertCertificateToPEM(testCertificate)));
         assertThrows(SignatureException.class, () -> certificateService.validateCertificate(certificateRequest));
 
-        // Creating a test X509CertificateCreateRequest
-        X509CertificateCreateRequest certificateCreateRequest = new X509CertificateCreateRequest();
+        // Creating a test X509CertificateData
+        X509CertificateData certificateCreateRequest = new X509CertificateData();
         certificateCreateRequest.setPublicKey(X509CertificateUtils.convertPublicKeyToPEM(testCertificate.getPublicKey()));
         certificateCreateRequest.setCommonName(caProperties.getProperty(CA_COMMON_NAME));
         certificateCreateRequest.setOrganization(caProperties.getProperty(CA_ORGANIZATION));

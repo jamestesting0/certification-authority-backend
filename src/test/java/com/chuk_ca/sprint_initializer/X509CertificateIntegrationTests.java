@@ -1,10 +1,8 @@
 package com.chuk_ca.sprint_initializer;
 
-import com.chuk_ca.sprint_initializer.model.EmailRequest;
-import com.chuk_ca.sprint_initializer.model.X509CertificateCreateRequest;
-import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
-import com.chuk_ca.sprint_initializer.model.X509CertificateRequest;
+import com.chuk_ca.sprint_initializer.model.*;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateEntryRepository;
+import com.chuk_ca.sprint_initializer.service.util.CSRUtils;
 import com.chuk_ca.sprint_initializer.service.util.ConfigFileLoader;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +54,7 @@ class X509CertificateIntegrationTests {
     @MockBean
     private JavaMailSender mailSender;
     private X509CertificateEntry testCertificateEntry;
-    private X509CertificateRequest testCertificateRequest;
+    private X509CertificateViewRequest testCertificateRequest;
 
     @BeforeEach
     void setup() throws IOException, CertificateException {
@@ -78,7 +76,7 @@ class X509CertificateIntegrationTests {
         certificateEntryRepository.save(testCertificateEntry);
 
         // Prepare test certificate request object
-        testCertificateRequest = new X509CertificateRequest();
+        testCertificateRequest = new X509CertificateViewRequest();
         testCertificateRequest.setPemContent(pemContent);
     }
 
@@ -134,13 +132,7 @@ class X509CertificateIntegrationTests {
         Date notAfter = calendar.getTime();
 
         X509CertificateCreateRequest createRequest = new X509CertificateCreateRequest();
-        createRequest.setCommonName(caProperties.getProperty(CA_COMMON_NAME));
-        createRequest.setOrganization(caProperties.getProperty(CA_ORGANIZATION));
-        createRequest.setOrganizationUnit(caProperties.getProperty(CA_ORGANIZATIONAL_UNIT));
-        createRequest.setLocality(caProperties.getProperty(CA_LOCALITY));
-        createRequest.setState(caProperties.getProperty(CA_STATE));
-        createRequest.setCountry(caProperties.getProperty(CA_COUNTRY));
-        createRequest.setPublicKey(X509CertificateUtils.convertPublicKeyToPEM(testCertificate.getPublicKey()));
+        createRequest.setCsr(CSRUtils.readCSRFromFile("./csr_example.pem"));
         createRequest.setNotBefore(notBefore);
         createRequest.setNotAfter(notAfter);
 
