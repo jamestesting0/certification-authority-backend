@@ -2,6 +2,7 @@
 
 ## Table of Contents
 1. [Introduction](#introduction)
+   1. [Disclaimers](#disclaimers)
 2. [Run Environment](#run-environment)
    1. [Configurations](#configurations)
    2. [Quickstart](#quickstart)
@@ -29,7 +30,9 @@
 ## Introduction
 A service designed to manage and issuance of X509 certificates. It serves as a backend for a Certification Authority (CA), 
 handling various certificate-related operations such as creating, storing, and validating certificates, as well as processing 
-Certificate Signing Requests (CSRs).
+Certificate Signing Requests (CSRs). Feel free to check out the research process of this repository 
+[here](https://docs.google.com/document/d/1rTGb8i-HUdeRk2bR9MKuzQc8yhCWPTRSlpWryRrzZ3U/edit?usp=sharing). For continuing the 
+project, the document linked only acts as a reference material, and it is recommended to write your own for further implementations.
 ### Disclaimers
 - Done in 2 weeks...
 - Probably have some organizational issues
@@ -62,7 +65,7 @@ Application related configurations stored in `resources/application.properties`
 ```
 *Note: Tests are excluded from the build because an isolated test environment is not configured. This means the tests may fail if they are run during the build process.*
 
-2. Run `CertificationAuthorityApplication` with Intellij configuration
+2. Run `CertificationAuthorityApplication` with the Intellij configuration
 
 **Docker Container** (TODO)
 
@@ -94,8 +97,8 @@ com.chuk_ca.sprint_initializer
 │
 ├── service
 │   ├── dao
-│   │   ├── DAO                       # Interface for Data Access Object
-│   │   └── X509CertificateEntryDAO   # Implementation of DAO for X509CertificateEntry
+│   │   ├── DAO                        # Interface for Data Access Object
+│   │   └── X509CertificateEntryDAO    # Implementation of DAO for X509CertificateEntry
 │   ├── util
 │   │   ├── ConfigFileLoader           # Interface for loading configuration files (specifically CA configurations)
 │   │   ├── ConfigFileLoaderImpl       # Implementation of the configuration file loader
