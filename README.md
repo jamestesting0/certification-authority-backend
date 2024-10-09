@@ -50,6 +50,7 @@ Application related configurations stored in `resources/application.properties`
 ./gradlew clean build -x test
 ```
 *Note: Tests are excluded from the build because an isolated test environment is not configured. This means the tests may fail if they are run during the build process.*
+
 2. Run `CertificationAuthorityApplication`
 
 **Docker Container** (TODO)
