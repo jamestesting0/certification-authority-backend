@@ -60,8 +60,8 @@ com.chuk_ca.sprint_initializer
 │   ├── PublicKeyResponse             # Response DTO for creating the key pair
 │   ├── X509CertificateCreateRequest  # Request DTO for creating a X509 certificate
 │   ├── X509CertificateEntry          # Entity class representing a X509 certificate log entry in the database
-│   ├── X509CertificateRequest        # Request DTO for handling a X509 certificate
-│   ├── X509CertificateResponse       # Response DTO for representing a X509 certificate
+│   ├── X509CertificateViewRequest    # Request DTO for viewing a X509 certificate
+│   ├── X509CertificateViewResponse   # Response DTO for representing a X509 certificate in a view request
 │
 ├── repository
 │   └── X509CertificateEntryRepository # Repository interface for database operations on X509 certificate entries
@@ -108,10 +108,10 @@ com.chuk_ca.sprint_initializer
   ```json
   [
     {
-      "id": 1,
-      "certificateName": "example",
-      "validFrom": "2023-01-01",
-      "validUntil": "2024-01-01"
+      "id": 0,
+      "certificate": "PEM encoded certificate",
+      "issuanceDate": "",
+      "issuancePerson": ""
     }
   ]
   ```
@@ -127,12 +127,12 @@ com.chuk_ca.sprint_initializer
   - **404 NOT FOUND**: If the certificate entry is not found.
 - **Example Response**:
   ```json
-  {
-    "id": 1,
-    "certificateName": "example",
-    "validFrom": "2023-01-01",
-    "validUntil": "2024-01-01"
-  }
+    {
+      "id": 0,
+      "certificate": "PEM encoded certificate",
+      "issuanceDate": "2023-01-01",
+      "issuancePerson": "James Chen"
+    }
   ```
 
 ### Delete Certificate Entry
@@ -151,10 +151,11 @@ com.chuk_ca.sprint_initializer
 - **Request Body**:
   ```json
   {
-    "certificateName": "example",
-    "validFrom": "2023-01-01",
-    "validUntil": "2024-01-01"
-  }
+      "id": 0,
+      "certificate": "PEM encoded certificate",
+      "issuanceDate": "2023-01-01",
+      "issuancePerson": "James Chen"
+    }
   ```
 - **Response**:
   - **200 OK**: Returns the saved `X509CertificateEntry` object.
@@ -166,15 +167,9 @@ com.chuk_ca.sprint_initializer
 - **Request Body**:
   ```json
   {
-    "publicKey": "base64-encoded-public-key",
-    "commonName": "example.com",
-    "organization": "Example Org",
-    "organizationUnit": "IT",
-    "locality": "City",
-    "state": "State",
-    "country": "Country",
-    "notBefore": "2023-01-01",
-    "notAfter": "2024-01-01"
+    "csr": "PEM encoded CSR",
+    "notBefore": "2024-10-09T09:44:55.887+00:00",
+    "notAfter": "2024-10-09T09:44:55.887+00:00"
   }
   ```
 - **Response**:
@@ -215,9 +210,7 @@ com.chuk_ca.sprint_initializer
 - **Request Body**:
   ```json
   {
-    "address": "email@example.com",
-    "subject": "Private Key",
-    "text": "Your private key"
+    "address": "email@example.com"
   }
   ```
 - **Response**:
@@ -235,5 +228,4 @@ com.chuk_ca.sprint_initializer
 ## Next Step
 ### Staff Portal
 ### User Portal
-### CSR
 ### TSL
