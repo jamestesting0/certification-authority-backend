@@ -1,6 +1,7 @@
 package com.chuk_ca.sprint_initializer.controller;
 
 import com.chuk_ca.sprint_initializer.model.*;
+import com.chuk_ca.sprint_initializer.service.dao.X509CertificateEntryDAO;
 import com.chuk_ca.sprint_initializer.service.util.CSRUtils;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateService;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
@@ -28,15 +29,17 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
 public class X509CertificateController {
     private final X509CertificateService certificateService;
+    private final X509CertificateEntryDAO certificateEntryDAO;
 
     @Autowired
-    public X509CertificateController(X509CertificateService certificateService) {
+    public X509CertificateController(X509CertificateService certificateService, X509CertificateEntryDAO certificateEntryDAO) {
         this.certificateService = certificateService;
+        this.certificateEntryDAO = certificateEntryDAO;
     }
 
     @GetMapping("certificates")
     public ResponseEntity<List<X509CertificateEntry>> getAllCertificateEntries() {
-        List<X509CertificateEntry> certificateEntries = certificateService.getAllCertificateEntries();
+        List<X509CertificateEntry> certificateEntries = certificateEntryDAO.getAll();
         if (certificateEntries.isEmpty()) {
             throw new ResponseStatusException(NO_CONTENT, "There are no certificate entries yet.");
         }
@@ -45,7 +48,7 @@ public class X509CertificateController {
 
     @GetMapping("certificates/{certificateId}")
     public ResponseEntity<X509CertificateEntry> getCertificateEntry(@PathVariable("certificateId") Long certificateId) {
-        X509CertificateEntry certificateEntry = certificateService.getCertificateEntryById(certificateId);
+        X509CertificateEntry certificateEntry = certificateEntryDAO.getByID(certificateId);
         if (certificateEntry == null) {
             throw new ResponseStatusException(NOT_FOUND, "This certificate entry does not exist.");
         }
@@ -54,13 +57,13 @@ public class X509CertificateController {
 
     @DeleteMapping("certificates/{certificateId}")
     public ResponseEntity<Void> deleteCertificateEntry(@PathVariable("certificateId") Long certificateId) {
-        certificateService.deleteCertificateEntryById(certificateId);
+        certificateEntryDAO.deleteByID(certificateId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("certificates")
     public ResponseEntity<X509CertificateEntry> saveCertificateEntry(@RequestBody X509CertificateEntry certificateEntry) {
-        return ResponseEntity.ok(certificateService.saveCertificateEntry(certificateEntry));
+        return ResponseEntity.ok(certificateEntryDAO.save(certificateEntry));
     }
 
     @PostMapping("certificates/create")

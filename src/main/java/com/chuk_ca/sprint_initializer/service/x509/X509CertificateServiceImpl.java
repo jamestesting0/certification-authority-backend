@@ -2,9 +2,7 @@ package com.chuk_ca.sprint_initializer.service.x509;
 
 import com.chuk_ca.sprint_initializer.model.EmailRequest;
 import com.chuk_ca.sprint_initializer.model.X509CertificateData;
-import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.model.X509CertificateViewRequest;
-import com.chuk_ca.sprint_initializer.service.dao.DAO;
 import com.chuk_ca.sprint_initializer.service.util.EmailSender;
 import jakarta.mail.MessagingException;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -21,35 +19,16 @@ import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
-import java.util.List;
 
 @Service
 public class X509CertificateServiceImpl implements X509CertificateService {
     private final X509CertificateFactory certificateFactory;
-    private final DAO<X509CertificateEntry> certificateEntryDAO;
     private final EmailSender emailSender;
 
     @Autowired
-    public X509CertificateServiceImpl(X509CertificateFactory certificateFactory, DAO<X509CertificateEntry> certificateEntryDAO, EmailSender emailSender) {
+    public X509CertificateServiceImpl(X509CertificateFactory certificateFactory, EmailSender emailSender) {
         this.certificateFactory = certificateFactory;
-        this.certificateEntryDAO = certificateEntryDAO;
         this.emailSender = emailSender;
-    }
-
-    public List<X509CertificateEntry> getAllCertificateEntries() {
-        return certificateEntryDAO.getAll();
-    }
-
-    public X509CertificateEntry getCertificateEntryById(Long certificateId) {
-        return certificateEntryDAO.getByID(certificateId);
-    }
-
-    public void deleteCertificateEntryById(Long certificateId) {
-        certificateEntryDAO.deleteByID(certificateId);
-    }
-
-    public X509CertificateEntry saveCertificateEntry(X509CertificateEntry certificateEntry) {
-        return certificateEntryDAO.save(certificateEntry);
     }
 
     public String createCertificateAsPEM(X509CertificateData certificateData) throws InvalidKeySpecException, CertificateException, OperatorCreationException, IOException {
