@@ -1,4 +1,4 @@
-package com.chuk_ca.sprint_initializer.service.dao;
+package com.chuk_ca.sprint_initializer.dao;
 
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateEntryRepository;
