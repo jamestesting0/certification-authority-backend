@@ -7,7 +7,6 @@ import com.chuk_ca.sprint_initializer.model.X509CertificateData;
 import com.chuk_ca.sprint_initializer.model.X509CertificateEntry;
 import com.chuk_ca.sprint_initializer.model.X509CertificateViewRequest;
 import com.chuk_ca.sprint_initializer.repository.X509CertificateEntryRepository;
-import com.chuk_ca.sprint_initializer.service.dao.X509CertificateEntryDAO;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateService;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateServiceImpl;
 import com.chuk_ca.sprint_initializer.service.util.ConfigFileLoader;
@@ -61,8 +60,6 @@ class X509CertificateServiceTests {
     @Autowired
     private X509CertificateService certificateService;
     @Autowired
-    private X509CertificateEntryDAO certificateEntryDAO;
-    @Autowired
     private X509CertificateEntryRepository certificateEntryRepository;
     @Autowired
     private ConfigFileLoader configFileLoader;
@@ -92,7 +89,7 @@ class X509CertificateServiceTests {
 
     @Test
     void testSaveCertificateEntry() {
-        certificateEntryDAO.save(testCertificateEntry);
+        certificateService.saveCertificateEntry(testCertificateEntry);
         Long certificateId = testCertificateEntry.getId(); // the ID is auto-generated after save
 
         // Check if the entity is saved correctly to the database
@@ -105,9 +102,9 @@ class X509CertificateServiceTests {
 
     @Test
     void testDeleteCertificateEntry() {
-        certificateEntryDAO.save(testCertificateEntry);
+        certificateService.saveCertificateEntry(testCertificateEntry);
         Long certificateId = testCertificateEntry.getId(); // the ID is auto-generated after save
-        certificateEntryDAO.deleteByID(certificateId);
+        certificateService.deleteCertificateEntryById(certificateId);
 
         // Check if the entity is deleted from the database
         Optional<X509CertificateEntry> foundCertificate = certificateEntryRepository.findById(certificateId);
@@ -209,7 +206,7 @@ class X509CertificateServiceTests {
         javaMailSender.setHost("localhost");
         javaMailSender.setPort(3025);
         EmailSender emailSenderMock = new EmailSenderImpl(javaMailSender);
-        X509CertificateService certificateServiceMock = new X509CertificateServiceImpl(null, emailSenderMock);
+        X509CertificateService certificateServiceMock = new X509CertificateServiceImpl(null, null, emailSenderMock);
 
         assertDoesNotThrow(() -> certificateServiceMock.sendPrivateKey(emailRequest, privateKey));
 
