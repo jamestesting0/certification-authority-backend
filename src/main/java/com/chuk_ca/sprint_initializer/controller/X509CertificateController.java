@@ -66,22 +66,11 @@ public class X509CertificateController {
 
     @PostMapping("certificates/create")
     public ResponseEntity<String> createCertificate(@RequestBody X509CertificateCreateRequest certificateCreateRequest) {
-        try {
-            CSRUtils.verifyCSR(certificateCreateRequest.getCsr());
-        } catch (IOException e) {
-            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Something went wrong when parsing the CSR.");
-        } catch (NoSuchAlgorithmException e) {
-            throw new ResponseStatusException(BAD_REQUEST, "The key algorithm should be RSA.");
-        } catch (InvalidKeySpecException e) {
-            throw new ResponseStatusException(BAD_REQUEST, "The public key provided in the CSR is invalid.");
-        } catch (OperatorCreationException e) {
-            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "The CSR verifier failed.");
-        } catch (PKCSException e) {
-            throw new ResponseStatusException(BAD_REQUEST, "The content of the CSR was tampered.");
-        }
-
         X509CertificateData certificateData = new X509CertificateData();
         try {
+            // Verify the signature of the CSR
+            CSRUtils.verifyCSR(certificateCreateRequest.getCsr());
+            // Get the content of the CSR
             Map<String, String> certificateAttrs = CSRUtils.parseCSR(certificateCreateRequest.getCsr());
             certificateData.setPublicKey(certificateAttrs.get("Public Key"));
             certificateData.setCommonName(certificateAttrs.get("Common Name (CN)"));
@@ -94,10 +83,14 @@ public class X509CertificateController {
             certificateData.setNotAfter(certificateCreateRequest.getNotAfter());
         } catch (IOException e) {
             throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Something went wrong when parsing the CSR.");
+        } catch (OperatorCreationException e) {
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "The CSR verifier failed.");
         } catch (NoSuchAlgorithmException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The key algorithm should be RSA.");
         } catch (InvalidKeySpecException e) {
             throw new ResponseStatusException(BAD_REQUEST, "The public key provided in the CSR is invalid.");
+        } catch (PKCSException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "The content of the CSR was tampered.");
         }
 
         try {
