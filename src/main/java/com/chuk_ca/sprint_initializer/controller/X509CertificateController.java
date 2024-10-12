@@ -6,6 +6,7 @@ import com.chuk_ca.sprint_initializer.service.x509.X509CertificateService;
 import com.chuk_ca.sprint_initializer.service.x509.X509CertificateUtils;
 import jakarta.mail.MessagingException;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.pkcs.PKCSException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +66,20 @@ public class X509CertificateController {
 
     @PostMapping("certificates/create")
     public ResponseEntity<String> createCertificate(@RequestBody X509CertificateCreateRequest certificateCreateRequest) {
+        try {
+            CSRUtils.verifyCSR(certificateCreateRequest.getCsr());
+        } catch (IOException e) {
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "Something went wrong when parsing the CSR.");
+        } catch (NoSuchAlgorithmException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "The key algorithm should be RSA.");
+        } catch (InvalidKeySpecException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "The public key provided in the CSR is invalid.");
+        } catch (OperatorCreationException e) {
+            throw new ResponseStatusException(INTERNAL_SERVER_ERROR, "The CSR verifier failed.");
+        } catch (PKCSException e) {
+            throw new ResponseStatusException(BAD_REQUEST, "The content of the CSR was tampered.");
+        }
+
         X509CertificateData certificateData = new X509CertificateData();
         try {
             Map<String, String> certificateAttrs = CSRUtils.parseCSR(certificateCreateRequest.getCsr());

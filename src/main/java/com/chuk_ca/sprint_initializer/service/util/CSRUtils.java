@@ -7,7 +7,11 @@ import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.operator.ContentVerifierProvider;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.pkcs.PKCSException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -56,6 +60,27 @@ public class CSRUtils {
         }
 
         return csrDetails;
+    }
+
+    public static boolean verifyCSR(String csr) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, PKCSException, OperatorCreationException {
+        try (StringReader reader = new StringReader(csr);
+             PEMParser pemParser = new PEMParser(reader)) {
+
+            Object parsedObject = pemParser.readObject();
+            if (!(parsedObject instanceof PKCS10CertificationRequest pkcs10Request)) {
+                throw new IllegalArgumentException("Provided CSR is not a valid PKCS10CertificationRequest.");
+            }
+
+            // Extract the public key
+            SubjectPublicKeyInfo publicKeyInfo = pkcs10Request.getSubjectPublicKeyInfo();
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyInfo.getEncoded());
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PublicKey publicKey = keyFactory.generatePublic(keySpec);
+
+            // Verify the CSR signature using the public key
+            ContentVerifierProvider verifierProvider = new JcaContentVerifierProviderBuilder().build(publicKey);
+            return pkcs10Request.isSignatureValid(verifierProvider);
+        }
     }
 
     public static String readCSRFromFile(String filePath) throws IOException {
